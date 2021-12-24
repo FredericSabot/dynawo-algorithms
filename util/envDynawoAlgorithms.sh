@@ -32,7 +32,8 @@ where [option] can be:
 
     clean-build-all               call in this order clean, config, build, build-doc
 
-    distrib ([args])              create distribution of dynawo-algorithms
+    distrib                       create distribution of dynawo-algorithms
+    distrib-headers               create distribution of dynawo-algorithms with headers
     deploy                        deploy the current version of dynawo-algorithms binaries/libraries/includes to be used as a release by an another project
 
     clean                         remove dynawo-algorithms objects
@@ -598,7 +599,7 @@ create_distrib() {
   DYNAWO_ALGORITHMS_VERSION=$(version)
   version=$(echo $DYNAWO_ALGORITHMS_VERSION | cut -f1 -d' ')
 
-  ZIP_FILE=dynawoAlgorithms_V$version.zip
+  ZIP_FILE=DynawoAlgorithms_V$version.zip
 
   deploy_dynawo_algorithms
 
@@ -618,6 +619,52 @@ create_distrib() {
   cp -r $DYNAWO_HOME/dynawo.sh dynawo-algorithms/
 
   cp ../bin/* dynawo-algorithms/bin/
+  cp ../lib/* dynawo-algorithms/lib/.
+  cp -r ../share/* dynawo-algorithms/share/
+  # combines dictionaries mapping
+  cat $DYNAWO_HOME/share/dictionaries_mapping.dic | grep -v -F // | grep -v -e '^$' >> dynawo-algorithms/share/dictionaries_mapping.dic
+  cp $DYNAWO_HOME/sbin/timeline_filter/timelineFilter.py dynawo-algorithms/bin/.
+  zip -r -y ../$ZIP_FILE dynawo-algorithms/
+  cd $DYNAWO_ALGORITHMS_DEPLOY_DIR
+
+  # remove temp directory
+  rm -rf tmp
+
+  # move distribution in distribution directory
+  DISTRIB_DIR=$DYNAWO_ALGORITHMS_HOME/distributions
+  mkdir -p $DISTRIB_DIR
+  mv $ZIP_FILE $DISTRIB_DIR
+
+  popd > /dev/null
+}
+
+create_distrib_with_headers() {
+  DYNAWO_ALGORITHMS_VERSION=$(version)
+  version=$(echo $DYNAWO_ALGORITHMS_VERSION | cut -f1 -d' ')
+
+  ZIP_FILE=DynawoAlgorithms_headers_V$version.zip
+
+  deploy_dynawo_algorithms
+
+  # create distribution
+  if [ ! -d "$DYNAWO_ALGORITHMS_DEPLOY_DIR" ]; then
+    error_exit "$DYNAWO_ALGORITHMS_DEPLOY_DIR does not exist."
+  fi
+  pushd $DYNAWO_ALGORITHMS_DEPLOY_DIR > /dev/null
+
+  mkdir tmp/
+  cd tmp/
+  mkdir -p dynawo-algorithms
+  cp -r $DYNAWO_HOME/bin dynawo-algorithms/
+  cp -r $DYNAWO_HOME/include dynawo-algorithms/
+  cp -r $DYNAWO_HOME/lib dynawo-algorithms/
+  cp -r $DYNAWO_HOME/ddb dynawo-algorithms/
+  cp -r $DYNAWO_HOME/share dynawo-algorithms/
+  cp -r $DYNAWO_HOME/dynawo.sh dynawo-algorithms/
+  cp -r $DYNAWO_HOME/dynawoEnv.txt dynawo-algorithms/
+
+  cp ../bin/* dynawo-algorithms/bin/
+  cp ../include/* dynawo-algorithms/include/
   cp ../lib/* dynawo-algorithms/lib/.
   cp -r ../share/* dynawo-algorithms/share/
   # combines dictionaries mapping
@@ -753,6 +800,10 @@ case $MODE in
 
   distrib)
     create_distrib || error_exit "Error while building dynawo-algorithms distribution"
+    ;;
+
+  distrib-headers)
+    create_distrib_with_headers || error_exit "Error while building dynawo-algorithms distribution with headers"
     ;;
 
   deploy)
