@@ -21,11 +21,12 @@
 
 #include "DYNAggrResXmlExporter.h"
 
-#include <JOBXmlImporter.h>
-#include <JOBIterators.h>
-#include <JOBJobsCollection.h>
-#include <JOBJobEntry.h>
 #include <DYNFileSystemUtils.h>
+#include <JOBIterators.h>
+#include <JOBJobEntry.h>
+#include <JOBOutputsEntry.h>
+#include <JOBJobsCollection.h>
+#include <JOBXmlImporter.h>
 
 namespace DYNAlgorithms {
 
@@ -39,13 +40,12 @@ ComputeSimulationLauncher::launch() {
   job::XmlImporter importer;
   boost::shared_ptr<job::JobsCollection> jobsCollection = importer.importFromFile(inputFile_);
   workingDirectory_ = workingDir;
-  for (job::job_iterator itJobEntry = jobsCollection->begin();
-      itJobEntry != jobsCollection->end();
-      ++itJobEntry) {
+  for (job::job_iterator itJobEntry = jobsCollection->begin(); itJobEntry != jobsCollection->end(); ++itJobEntry) {
     boost::shared_ptr<job::JobEntry>& job = *itJobEntry;
     std::cout << DYNLog(LaunchingJob, (*itJobEntry)->getName()) << std::endl;
     SimulationResult result;
     SimulationParameters params;
+    initParametersWithJob(job, params);
     result.setScenarioId(job->getName());
     boost::shared_ptr<DYN::Simulation> simulation = createAndInitSimulation(workingDir, job, params, result, inputs_);
     if (simulation) {
@@ -58,7 +58,6 @@ ComputeSimulationLauncher::launch() {
 }
 
 void
-ComputeSimulationLauncher::createOutputs(std::map<std::string, std::string>& /*mapData*/, bool /*zipIt*/) const {
-}
+ComputeSimulationLauncher::createOutputs(std::map<std::string, std::string>& /*mapData*/, bool /*zipIt*/) const {}
 
 }  // namespace DYNAlgorithms

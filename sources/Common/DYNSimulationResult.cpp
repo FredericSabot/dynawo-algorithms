@@ -24,6 +24,7 @@
 namespace DYNAlgorithms {
 
 SimulationResult::SimulationResult():
+    variation_(-1.),
     success_(false),
     status_(EXECUTION_PROBLEM_STATUS) {
 }
@@ -48,7 +49,11 @@ SimulationResult::operator=(const SimulationResult& result) {
   variation_ = result.variation_;
   success_ = result.success_;
   status_ = result.status_;
+  timelineStream_.str("");
+  timelineStream_.clear();
   timelineStream_ << result.timelineStream_.str();
+  constraintsStream_.str("");
+  constraintsStream_.clear();
   constraintsStream_ << result.constraintsStream_.str();
   failingCriteria_ = result.failingCriteria_;
   return *this;
@@ -61,7 +66,7 @@ SimulationResult::setScenarioId(const std::string& id) {
 
 
 void
-SimulationResult::setVariation(const std::string& variation) {
+SimulationResult::setVariation(const double variation) {
   variation_ = variation;
 }
 
@@ -100,12 +105,20 @@ SimulationResult::getScenarioId() const {
   return scenarioId_;
 }
 
+double
+SimulationResult::getVariation() const {
+  return variation_;
+}
 
 std::string
 SimulationResult::getUniqueScenarioId() const {
-  if (!variation_.empty())
-    return scenarioId_ + "-"+variation_;
-  return scenarioId_;
+  std::ostringstream ss;
+  ss << scenarioId_;
+  if (variation_ >= 0.) {
+    ss << "-";
+    ss << variation_;
+  }
+  return ss.str();
 }
 
 bool

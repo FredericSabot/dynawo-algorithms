@@ -27,7 +27,7 @@
 #include <DYNCommon.h>
 #include "DYNRobustnessAnalysisLauncher.h"
 #include "DYNLoadIncreaseResult.h"
-#include <boost/unordered_map.hpp>
+#include <map>
 
 namespace DYNAlgorithms {
 class LoadIncrease;
@@ -216,6 +216,13 @@ class MarginCalculationLauncher : public RobustnessAnalysisLauncher {
    */
   std::string generateIDMFileNameForVariation(double variation) const;
 
+  /**
+   * @brief read the initial jobs file to set the different normal start and stop times
+   * @param jobFileLoadIncrease job file for the loadIncrease
+   * @param jobFileScenario job file for the scenario
+   */
+  void readTimes(const std::string& jobFileLoadIncrease, const std::string& jobFileScenario);
+
  private:
   /**
    * @brief double comparison with tolerance
@@ -235,7 +242,9 @@ class MarginCalculationLauncher : public RobustnessAnalysisLauncher {
   std::vector<LoadIncreaseResult> results_;  ///< results of the systematic analysis
   std::map<double, SimulationResult, dynawoDoubleLess> loadIncreaseCache_;  ///< contains available load increase simulation results
   std::map<double, LoadIncreaseResult, dynawoDoubleLess> scenariosCache_;  ///< contains available scenarios simulation results
-  boost::unordered_map<std::string, MultiVariantInputs> inputsByIIDM_;  ///< For scenarios, the contexts to use, by IIDM file
+  std::map<std::string, MultiVariantInputs> inputsByIIDM_;  ///< For scenarios, the contexts to use, by IIDM file
+  double tLoadIncrease_;  ///< maximum stop time for the load increase part
+  double tScenario_;  ///< stop time for the scenario part
 };
 }  // namespace DYNAlgorithms
 
