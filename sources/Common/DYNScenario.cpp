@@ -42,6 +42,36 @@ Scenario::getDydFile() const {
 }
 
 void
+Scenario::setIidmFile(const std::string& file) {
+  iidmFile_ = file;
+}
+
+const std::string&
+Scenario::getIidmFile() const {
+  return iidmFile_;
+}
+
+void
+Scenario::setNetworkParFile(const std::string& file) {
+  networkParFile_ = file;
+}
+
+const std::string&
+Scenario::getNetworkParFile() const {
+  return networkParFile_;
+}
+
+void
+Scenario::setNetworkParId(const std::string& id) {
+  networkParId_ = id;
+}
+
+const std::string&
+Scenario::getNetworkParId() const {
+  return networkParId_;
+}
+
+void
 Scenario::setCriteriaFile(const std::string& file) {
   criteriaFile_ = file;
 }

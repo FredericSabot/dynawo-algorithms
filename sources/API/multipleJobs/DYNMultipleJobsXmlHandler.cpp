@@ -159,6 +159,12 @@ ScenarioHandler::create(attributes_type const& attributes) {
   scenario_->setId(attributes["id"]);
   if (attributes.has("dydFile"))
     scenario_->setDydFile(attributes["dydFile"]);
+  if (attributes.has("iidmFile"))
+    scenario_->setIidmFile(attributes["iidmFile"]);
+  if (attributes.has("networkParFile"))
+    scenario_->setNetworkParFile(attributes["networkParFile"]);
+  if (attributes.has("networkParId"))
+    scenario_->setNetworkParId(attributes["networkParId"]);
   if (attributes.has("criteriaFile"))
     scenario_->setCriteriaFile(attributes["criteriaFile"]);
 }

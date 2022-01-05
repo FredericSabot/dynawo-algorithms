@@ -91,8 +91,10 @@ SystematicAnalysisLauncher::launch() {
 SimulationResult
 SystematicAnalysisLauncher::launchScenario(const boost::shared_ptr<Scenario>& scenario) {
   if (nbThreads_ == 1)
-    std::cout << " Launch scenario :" << scenario->getId() << " dydFile =" << scenario->getDydFile()
-              << " criteriaFile =" << scenario->getCriteriaFile() << std::endl;
+    std::cout << " Launch scenario :" << scenario->getId() << " dydFile = '" << scenario->getDydFile()
+              << "' iidmFile = '" << scenario->getIidmFile() << "' networkParFile = '" << scenario->getNetworkParFile()
+              << "' networkParId = '" << scenario->getNetworkParId()
+              << "' criteriaFile = '" << scenario->getCriteriaFile() << "'" << std::endl;
 
   std::string workingDir  = createAbsolutePath(scenario->getId(), workingDirectory_);
   boost::shared_ptr<job::JobEntry> job = inputs_.cloneJobEntry();
@@ -100,6 +102,7 @@ SystematicAnalysisLauncher::launchScenario(const boost::shared_ptr<Scenario>& sc
     job->getOutputsEntry()->getTimelineEntry()->setMaxPriority(1);
   }
   addDydFileToJob(job, scenario->getDydFile());
+  setIidmFileForJob(job, scenario->getIidmFile(), scenario->getNetworkParFile(), scenario->getNetworkParId());
   setCriteriaFileForJob(job, scenario->getCriteriaFile());
 
   SimulationParameters params;

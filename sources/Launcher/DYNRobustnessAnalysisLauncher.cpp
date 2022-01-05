@@ -274,6 +274,17 @@ RobustnessAnalysisLauncher::addDydFileToJob(boost::shared_ptr<job::JobEntry>& jo
 }
 
 void
+RobustnessAnalysisLauncher::setIidmFileForJob(boost::shared_ptr<job::JobEntry>& job,
+    const std::string& iidmFile, const std::string& networkParFile, const std::string& networkParId) {
+  if (!iidmFile.empty())
+    job->getModelerEntry()->getNetworkEntry()->setIidmFile(iidmFile);
+  if (!networkParFile.empty())
+    job->getModelerEntry()->getNetworkEntry()->setNetworkParFile(networkParFile);
+  if (!networkParId.empty())
+    job->getModelerEntry()->getNetworkEntry()->setNetworkParId(networkParId);
+}
+
+void
 RobustnessAnalysisLauncher::setCriteriaFileForJob(boost::shared_ptr<job::JobEntry>& job,
     const std::string& criteriaFile) {
   if (!criteriaFile.empty()) {

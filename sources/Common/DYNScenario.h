@@ -43,6 +43,24 @@ class Scenario {
   void setDydFile(const std::string& file);
 
   /**
+   * @brief set the iidm file to describe the scenario
+   * @param file iidm file to describe the scenario
+   */
+  void setIidmFile(const std::string& file);
+
+  /**
+   * @brief set the network par file to describe the scenario
+   * @param file network par file to describe the scenario
+   */
+  void setNetworkParFile(const std::string& file);
+
+  /**
+   * @brief set the dyd file to describe the scenario
+   * @param id network par id to describe the scenario
+   */
+  void setNetworkParId(const std::string& id);
+
+  /**
    * @brief set the criteria file to use for the scenario
    * @param file criteria file to use for the scenario
    */
@@ -61,6 +79,24 @@ class Scenario {
   const std::string& getDydFile() const;
 
   /**
+   * @brief get the iidm file of the scenario
+   * @return iidm file of the scenario
+   */
+  const std::string& getIidmFile() const;
+
+  /**
+   * @brief get the network par file of the scenario
+   * @return network par file of the scenario
+   */
+  const std::string& getNetworkParFile() const;
+
+  /**
+   * @brief get the network par id of the scenario
+   * @return network par id of the scenario
+   */
+  const std::string& getNetworkParId() const;
+
+  /**
    * @brief get the criteria file of the scenario
    * @return criteria file of the scenario
    */
@@ -69,6 +105,9 @@ class Scenario {
  private:
   std::string id_;  ///< id of the scenario
   std::string dydFile_;  ///< dyd file to use for the scenario
+  std::string iidmFile_;  ///< iidm file to use for the scenario
+  std::string networkParFile_;  ///< network par file to use for the scenario
+  std::string networkParId_;  ///< network par id to use for the scenario
   std::string criteriaFile_;  ///< criteria file to use for the scenario
 };
 

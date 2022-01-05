@@ -154,6 +154,16 @@ class RobustnessAnalysisLauncher {
   void addDydFileToJob(boost::shared_ptr<job::JobEntry>& job, const std::string& dydFile);
 
   /**
+   * @brief add an iidm file to the job
+   * @param job job to simulate
+   * @param iidmFile iidm file to add to the job, empty if none to add
+   * @param networkParFile par file containing the dynamic parameters of the network
+   * @param networkParId id of the parameter set constaining the dynamic parameters of the network
+   */
+  void setIidmFileForJob(boost::shared_ptr<job::JobEntry>& job, const std::string& iidmFile,
+      const std::string& networkParFile, const std::string& networkParId);
+
+  /**
    * @brief replace the criteria file for the job
    * @param job job to simulate
    * @param criteriaFile criteria file to set for the job, empty if none to set
