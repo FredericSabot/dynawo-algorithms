@@ -139,12 +139,13 @@ class RobustnessAnalysisLauncher {
    * @param params simulation parameters
    * @param result will be filled with simulation results if the simulation initialization failed
    * @param analysisContext the analysis context to use for data interface and job
+   * @param iidmFile optional iidm file to override the iidm provided by the job file
    *
    * @return Initialized simulation or a null pointer if initialization failed
    */
   boost::shared_ptr<DYN::Simulation> createAndInitSimulation(const std::string& workingDir,
       boost::shared_ptr<job::JobEntry>& job, const SimulationParameters& params, SimulationResult& result,
-      const MultiVariantInputs& analysisContext);
+      const MultiVariantInputs& analysisContext, const std::string& iidmFile = "");
 
   /**
    * @brief add a dyd file to the job

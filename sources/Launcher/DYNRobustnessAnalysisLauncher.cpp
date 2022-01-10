@@ -277,7 +277,7 @@ void
 RobustnessAnalysisLauncher::setIidmFileForJob(boost::shared_ptr<job::JobEntry>& job,
     const std::string& iidmFile, const std::string& networkParFile, const std::string& networkParId) {
   if (!iidmFile.empty())
-    job->getModelerEntry()->getNetworkEntry()->setIidmFile(iidmFile);
+    job->getModelerEntry()->getNetworkEntry()->setIidmFile(iidmFile);  // Maybe useless
   if (!networkParFile.empty())
     job->getModelerEntry()->getNetworkEntry()->setNetworkParFile(networkParFile);
   if (!networkParId.empty())
@@ -294,16 +294,25 @@ RobustnessAnalysisLauncher::setCriteriaFileForJob(boost::shared_ptr<job::JobEntr
 
 boost::shared_ptr<DYN::Simulation>
 RobustnessAnalysisLauncher::createAndInitSimulation(const std::string& workingDir,
-    boost::shared_ptr<job::JobEntry>& job, const SimulationParameters& params, SimulationResult& result, const MultiVariantInputs& analysisContext) {
+    boost::shared_ptr<job::JobEntry>& job, const SimulationParameters& params, SimulationResult& result, const MultiVariantInputs& analysisContext,
+    const std::string& iidmFile) {
   boost::shared_ptr<DYN::SimulationContext> context = boost::shared_ptr<DYN::SimulationContext>(new DYN::SimulationContext());
   context->setResourcesDirectory(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
   context->setLocale(getMandatoryEnvVar("DYNAWO_ALGORITHMS_LOCALE"));
   context->setInputDirectory(workingDirectory_);
   context->setWorkingDirectory(workingDir);
 
-  boost::shared_ptr<DYN::DataInterface> dataInterface = analysisContext.dataInterfaceContainer()
-    ? analysisContext.dataInterfaceContainer()->getDataInterface()
-    : boost::shared_ptr<DYN::DataInterface>();
+  boost::shared_ptr<DYN::DataInterface> dataInterface;
+  if (iidmFile.empty()) {
+    dataInterface = analysisContext.dataInterfaceContainer()
+      ? analysisContext.dataInterfaceContainer()->getDataInterface()
+      : boost::shared_ptr<DYN::DataInterface>();
+  } else {
+    // Have to create a new data interface in order to override the default iidm
+    dataInterface = DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM,
+      createAbsolutePath(iidmFile, workingDirectory_));
+  }
+
   boost::shared_ptr<DYN::Simulation> simulation =
     boost::shared_ptr<DYN::Simulation>(new DYN::Simulation(job, context, dataInterface));
 

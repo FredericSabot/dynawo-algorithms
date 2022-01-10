@@ -491,10 +491,8 @@ void
 MarginCalculationLauncher::launchScenario(const MultiVariantInputs& inputs, const boost::shared_ptr<Scenario>& scenario,
     const double variation, SimulationResult& result) {
   if (nbThreads_ == 1)
-    std::cout << " Launch task :" << scenario->getId() << " dydFile = '" << scenario->getDydFile()
-              << "' iidmFile = '" << scenario->getIidmFile() << "' networkParFile = '" << scenario->getNetworkParFile()
-              << "' networkParId = '" << scenario->getNetworkParId()
-              << "' criteriaFile = '" << scenario->getCriteriaFile() << "'" << std::endl;
+    std::cout << " Launch task :" << scenario->getId() << " dydFile =" << scenario->getDydFile()
+              << " criteriaFile =" << scenario->getCriteriaFile() << std::endl;
 
   std::stringstream subDir;
   subDir << "step-" << variation << "/" << scenario->getId();
@@ -504,7 +502,6 @@ MarginCalculationLauncher::launchScenario(const MultiVariantInputs& inputs, cons
     job->getOutputsEntry()->getTimelineEntry()->setMaxPriority(1);
   }
   addDydFileToJob(job, scenario->getDydFile());
-  setIidmFileForJob(job, scenario->getIidmFile(), scenario->getNetworkParFile(), scenario->getNetworkParId());
   setCriteriaFileForJob(job, scenario->getCriteriaFile());
 
   SimulationParameters params;
