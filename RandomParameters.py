@@ -418,8 +418,9 @@ if __name__ == "__main__":
             output_scenario.set('id', addSuffix(scenario.get('id'), suffix))
             
             iidm = scenario.get('iidmFile')
-            if iidm != None:
-                output_scenario.set('iidmFile', addSuffix(getShortPath(iidm), suffix))
+            if iidm == None:
+                iidm = base_iidm
+            output_scenario.set('iidmFile', addSuffix(getShortPath(iidm), suffix))
             
             dyd = scenario.get('dydFile')
             if dyd == None:
