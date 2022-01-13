@@ -1,0 +1,5 @@
+parFile,ParamSet_id,Param_id,Distribution,Param1,Param2,Param3,Param4,Param5
+IEEE14.par,2,generator_H,gaussian_percent,5,,,,
+IEEE14.par,3,generator_H,gaussian_percent,5,,,,
+IEEE14.par,1,load_alpha,gaussian_percent,20,,,,
+IEEE14.par,2,voltageRegulator_EfdMaxPu,gaussian_percent,5,,,,

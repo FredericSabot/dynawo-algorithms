@@ -34,6 +34,7 @@ nrt/data/IEEE14/MC*/result.zip
 nrt/data/IEEE14/MC*/*.dyd
 nrt/data/*/*/*/outputs*/
 nrt/output
+examples/*/*/files/*/
 *.pyc
 platforms/DBCreation/DBCreation.log
 distributions/
