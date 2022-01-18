@@ -1,0 +1,5 @@
+Component_type,Component_name,Param_id,L_bound,U_bound
+Load,_LOAD___3_EC,p0,50,150
+Load,_LOAD___2_EC,p0,10,30
+Load,_LOAD___9_EC,p0,15,45
+Load,_LOAD___4_EC,p0,30,70

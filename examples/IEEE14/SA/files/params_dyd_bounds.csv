@@ -1,0 +1,5 @@
+parFile,ParamSet_id,Param_id,L_bound,U_bound
+IEEE14.par,2,generator_H,4,6
+IEEE14.par,3,generator_H,5,8
+IEEE14.par,1,load_alpha,1,2
+IEEE14.par,2,voltageRegulator_EfdMaxPu,3,8
