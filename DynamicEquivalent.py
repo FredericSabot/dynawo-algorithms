@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 from lxml import etree
 import csv
 import random
@@ -48,7 +47,12 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
 class DynamicParametersBounds:
     def __init__(self, bounds_csv, fic_MULTIPLE):
         """
-        
+        Creates an orderedDict of structure {parFile: [paramSetId, paramID, bounds]}. It is used to
+        stored the bounds of some dynamic parameters to a format that can easily be sent to dynawo.
+
+        parFile is the file where the parameter is stored
+        paramSetId and paramID locate the parameter in the file
+        bounds are bounds on the possible value that-the parameter can take 
         """
         self.d = OrderedDict()
         input_pars = RandomParameters.ficGetPars(fic_MULTIPLE)
@@ -94,9 +98,10 @@ class DynamicParametersBounds:
                 value[2].append(bounds)
                 
 
-    def toValueList(self):
+    def toBoundsList(self):
         """
-        
+        Create a list of the bounds contained in self.d (that has the structure {parFile: [paramSetId, paramID, bounds]})
+        by iterating on self.d. The bounds are always returned in the same order as self.d is an orderedDict
         """
         out = []
         for value in self.d.values():
@@ -106,15 +111,15 @@ class DynamicParametersBounds:
     
     def valueListToDict(self, v_lst):
         """
-        Creates a dictionary that has the same structure as self.d (i.e. {parFile: [paramSetId, paramID, bounds]}), but with the bounds replaced
-        by the values in v_lst
+        Creates a dictionary that has the same structure as self.d (i.e. {parFile: [paramSetId, paramID, bounds]}),
+        but with the element 'bounds' (a tuple) replaced by the values in v_lst (that are floats)
 
         Also checks that the values are within the bounds.
-        The order of the values in the same should be the same as the ordre used in self.toValueList()
+        The order of the values should be the same as the ordre used in self.toBoundsList().
         """
 
-        if len(v_lst) != len(self.toValueList()):
-            raise ValueError("Length of v_lst (%d) should be %d" % (len(v_lst), len(self.toValueList())))
+        if len(v_lst) != len(self.toBoundsList()):
+            raise ValueError("Length of v_lst (%d) should be %d" % (len(v_lst), len(self.toBoundsList())))
         
         new_d = dict()
         v_index = 0
@@ -137,7 +142,12 @@ class DynamicParametersBounds:
 class StaticParametersBounds:
     def __init__(self, bounds_csv, fic_MULTIPLE):
         """
-        
+        Creates an orderedDict of structure {iidmFile: [Component_type, Component_name, Param_id, bounds]}. It is used to
+        stored the bounds of some static parameters to a format that can easily be sent to dynawo.
+
+        iidmFile is the file where the parameter is stored
+        Component_type, Component_name and Param_id locate the parameter in the file
+        bounds are bounds on the possible value that the parameter can take
         """
         self.d = OrderedDict()
         with open(bounds_csv) as csvfile:
@@ -153,7 +163,6 @@ class StaticParametersBounds:
             param_bounds = []
 
             for row in spamreader:
-                # print(', '.join(row))
                 componentType = row[0]
                 componentName = row[1]
                 paramId = row[2]
@@ -170,9 +179,10 @@ class StaticParametersBounds:
         for input_iidm in RandomParameters.ficGetIidms(fic_MULTIPLE): # Assume all iidm's have the same parameters/bounds
             self.d[input_iidm] = [component_types, component_names, param_ids, param_bounds]
 
-    def toValueList(self):
+    def toBoundsList(self):
         """
-        
+        Create a list of the bounds contained in self.d (that has the structure {iidmFile: [Component_type, Component_name, Param_id, bounds]})
+        by iterating on self.d. The bounds are always returned in the same order as self.d is an orderedDict
         """
         out = []
         for value in self.d.values():
@@ -182,15 +192,15 @@ class StaticParametersBounds:
     
     def valueListToDict(self, v_lst):
         """
-        Creates a dictionary that has the same structure as self.d (i.e. {parFile: [paramSetId, paramID, bounds]}), but with the bounds replaced
-        by the values in v_lst
+        Creates a dictionary that has the same structure as self.d (i.e. {iidmFile: [Component_type, Component_name, Param_id, bounds]}),
+        but with the element 'bounds' (a tuple) replaced by the values in v_lst (that are floats)
 
         Also checks that the values are within the bounds.
-        The order of the values in the same should be the same as the ordre used in self.toValueList()
+        The order of the values should be the same as the ordre used in self.toBoundsList().
         """
 
-        if len(v_lst) != len(self.toValueList()):
-            raise ValueError("Length of v_lst (%d) should be %d" % (len(v_lst), len(self.toValueList())))
+        if len(v_lst) != len(self.toBoundsList()):
+            raise ValueError("Length of v_lst (%d) should be %d" % (len(v_lst), len(self.toBoundsList())))
         
         new_d = dict()
         v_index = 0
@@ -220,6 +230,8 @@ if __name__ == "__main__":
                         help='Working directory')
     parser.add_argument('--fic_MULTIPLE', type=str, required=True,
                         help='Input file containing the different scenarios to run')
+    parser.add_argument('--nb_threads', type=str, required=True,
+                        help="Number of threads (to use in the SA's)")
     # Random runs
     parser.add_argument('--csv_par', type=str, required=True,
                         help='Csv file containing the list of dynamic parameters to be randomised and associated distributions')
@@ -257,34 +269,35 @@ if __name__ == "__main__":
         dyn_data_dic = RandomParameters.randomiseDynamicParams(args.fic_MULTIPLE, args.csv_par)
 
         RandomParameters.writeParametricSAInputs(args.working_dir, args.fic_MULTIPLE, output_dir_name, static_data_dic, dyn_data_dic, run_id)
-        cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml', '--output' , 'aggregatedResults.xml', '--nbThreads', '4']
+        cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
+                '--output' , 'aggregatedResults.xml', '--nbThreads', args.nb_threads]
         subprocess.run(cmd)
         run_fic_MULTIPLE.append(os.path.join(output_dir, 'fic_MULTIPLE.xml'))
 
         curves = MergeRandomOutputs.mergeCurves(run_fic_MULTIPLE, output_dir_curves, args.curve_names, args.time_precision)
-        # curves = np.zeros((nb_curve_names, nb_scenarios_per_fic, nb_runs, nb_t_steps))
-
-        # mean = np.zeros((nb_curve_names, nb_scenarios_per_fic, nb_t_steps)) # Just to remind order of indices
+        # Order of indices:        
+            # curves = ndarray(nb_curve_names, nb_scenarios_per_fic, nb_runs, nb_t_steps)
+            # mean = ndarray(nb_curve_names, nb_scenarios_per_fic, nb_t_steps)
         mean = np.mean(curves, axis=2)
-        sigma = np.std(curves, axis=2, ddof=1) # ddof = 1 means divide by sqrt(N-1)
+        sigma = np.std(curves, axis=2, ddof=1) # ddof = 1 means divide by sqrt(N-1) instead of sqrt(N)
 
         if run_id >= 4: # Do at least 5 runs (and avoid div by 0)
-            norm_sigma = sigma / mean[:,:,[0 for i in range(sigma.shape[2])]] / sqrt(run_id + 1) # Normalise with respect to value at t = 0 (avoid div by 0)
-            print('\n\n\nNorm sigma: %f\nRun_id: %d\n\n\n' % (norm_sigma.max(), run_id))
-            if norm_sigma.max() < sigma_thr: 
+            std_error = sigma / mean[:,:,[0 for i in range(sigma.shape[2])]] / sqrt(run_id + 1) # Normalise with respect to value at t = 0 (avoid div by 0)
+            print('\n\n\nStd error: %f%%\nRun_id: %d\n\n\n' % (std_error.max()*100, run_id))
+            if std_error.max() < sigma_thr: 
                 print("Threshold reached in %d iterations" % (run_id + 1))
                 break
-    if norm_sigma.max() > sigma_thr:
-        print("Warning: maximum number of random runs (%d) reached with sigma (%f) > tol (%f)" % (args.nb_runs_random, norm_sigma.max(), sigma_thr))
+    if std_error.max() > sigma_thr:
+        print("Warning: maximum number of random runs (%d) reached with sigma (%f) > tol (%f)" % (args.nb_runs_random, std_error.max(), sigma_thr))
     
 
     # Part 2: optimisation
     dyn_bounds_dic = DynamicParametersBounds(args.csv_par_bounds, args.fic_MULTIPLE)
-    dyn_bounds = dyn_bounds_dic.toValueList()
+    dyn_bounds = dyn_bounds_dic.toBoundsList()
     nb_dyn_params = len(dyn_bounds)
 
     iidm_bounds_dic = StaticParametersBounds(args.csv_iidm_bounds, args.fic_MULTIPLE)
-    iidm_bounds = iidm_bounds_dic.toValueList()
+    iidm_bounds = iidm_bounds_dic.toBoundsList()
 
     bounds = dyn_bounds + iidm_bounds
 
@@ -299,7 +312,8 @@ if __name__ == "__main__":
         output_dir_name = os.path.join('Optimisation', "It_%03d" % run_id)
         output_dir = os.path.join(args.working_dir, output_dir_name)
         RandomParameters.writeParametricSAInputs(args.working_dir, args.fic_MULTIPLE, output_dir_name, static_data_dic, dyn_data_dic, run_id)
-        cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml', '--output' , 'aggregatedResults.xml', '--nbThreads', '4']
+        cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
+                '--output' , 'aggregatedResults.xml', '--nbThreads', args.nb_threads]
         subprocess.run(cmd)
 
         output_dir_curves = os.path.join(args.working_dir, 'Optimisation', "MergedCurves_it_%03d" % run_id)

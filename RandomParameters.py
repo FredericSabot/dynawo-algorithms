@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 from lxml import etree
 import csv
 import random
@@ -12,14 +11,19 @@ from copy import deepcopy
 
 def getRandom(value, type_, distribution, params):
     """
+    Return a random value
+
+    @param value Average of the distribution (not used for uniform_minmax)
+    @param type_ Type of the value to return
+    @param distribution Distribution of the random value
+    @param params Parameters of the distribution
+
     Supported distributions are:
 
     gaussian(sigma)
     gaussian_percent(percent_sigma)
     uniform_minmax(min, max)
     uniform_delta(delta)
-
-    The average of the distribution (except for uniform_minmax) is taken as the original value of the parameter
     """
     value = float(value)
     output = 0
@@ -46,6 +50,7 @@ def getRandom(value, type_, distribution, params):
         return int(output)
     else:
         raise Exception("Unknown type: %s" % type_)
+
 
 def findParameterSet(root, parameterSetId):
     for parameterSet in list(root):
@@ -108,7 +113,7 @@ def ficGetPars(fic_MULTIPLE):
             dyd_par = os.path.join(working_dir, blackBox.attrib['parFile'])
             if not fileIsInList(dyd_par, par_files):
                 par_files.append(dyd_par)
-            blackBox.set('parFile', getShortPath(dyd_par))
+            blackBox.set('parFile', os.path.basename(dyd_par))
 
         if len(dyd_root.findall('.//' + dyd_prefix_root_string + 'unitDynamicModel', dyd_namespace)) != 0:
             raise NotImplementedError('Consider using precompiled models for systematic analyses')
@@ -266,7 +271,7 @@ def writeDynamicParams(dyd_parameters_dic, output_dir):
             parameter = findParameter(parameterSet, param_ids[i])
             parameter.set('value', str(param_values[i]))
 
-        output_par = os.path.join(output_dir, getShortPath(input_par))
+        output_par = os.path.join(output_dir, os.path.basename(input_par))
         with open(output_par, 'xb') as doc:
             doc.write(etree.tostring(par_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
@@ -470,7 +475,7 @@ def writeStaticParams(static_parameters_dic, output_dir):
 
         pp.loadflow.run_ac(n)
 
-        output_iidm = os.path.join(output_dir, getShortPath(input_iidm))
+        output_iidm = os.path.join(output_dir, os.path.basename(input_iidm))
         if os.path.exists(output_iidm):
             raise Exception('')
         else:
@@ -490,14 +495,6 @@ def addSuffix(s, suffix):
         return s + suffix
 
 
-def getShortPath(s):
-    """
-    Return short path from full path, e.g. foo/bar -> bar
-    """
-    # return s.split('/')[-1]
-    return os.path.basename(s)
-
-
 def fileIsInList(file, lst):
     for f in lst:
         if os.path.samefile(f, file):
@@ -509,7 +506,7 @@ def copyNoReplace (f, dest):
     """
     Copy file to dest, raise exception if a file/dir/... with the same name already exists in destination
     """
-    final_dest = dest + '/' + getShortPath(f)
+    final_dest = dest + '/' + os.path.basename(f)
     if os.path.exists(final_dest):
         raise Exception("Cannot copy to %s, another file already exists" % final_dest)
     shutil.copy(f, dest)
@@ -547,7 +544,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
     output_fic_root = etree.Element(rootName, nsmap=fic_namespace)
     output_scenarios = etree.SubElement(output_fic_root, 'scenarios')
     jobsFile = scenarios.get('jobsFile')
-    output_scenarios.set('jobsFile', getShortPath(jobsFile))
+    output_scenarios.set('jobsFile', os.path.basename(jobsFile))
 
     jobs = etree.parse(os.path.join(working_dir, jobsFile))
     jobs_root = jobs.getroot()
@@ -560,7 +557,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
     if len(networks) != 1:
         raise Exception("Jobs file should contain exactly one iidm entry, %s found" % (len(networks)))
     base_iidm = os.path.join(working_dir, networks[0].get('iidmFile'))
-    networks[0].set('iidmFile', getShortPath(base_iidm))
+    networks[0].set('iidmFile', os.path.basename(base_iidm))
 
     # Copy .dyd
     jobs_dyd = jobs_root.findall('.//' + '{' + jobs_namespace_uri + '}' + 'dynModels[@dydFile]')
@@ -575,7 +572,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
     if len(jobs_solverPar) != 1:
         raise Exception("Jobs file should contain exactly one solverFile entry, %s found" % (len(jobs_solverPar)))
     solverPar = os.path.join(working_dir, jobs_solverPar[0].get('parFile'))
-    jobs_solverPar[0].set('parFile', getShortPath(solverPar))
+    jobs_solverPar[0].set('parFile', os.path.basename(solverPar))
     copyNoReplace(solverPar, output_dir)
 
     # Copy .crt
@@ -584,7 +581,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
         raise Exception("Jobs file should contain at most one .crt entry, %s found" % (len(jobs_crt)))
     if len(jobs_crt) > 0:
         crt = os.path.join(working_dir, jobs_crt[0].get('criteriaFile'))
-        jobs_crt[0].set('criteriaFile', getShortPath(crt))
+        jobs_crt[0].set('criteriaFile', os.path.basename(crt))
         copyNoReplace(crt, output_dir)
     
     # Copy .crv curves inputFile=
@@ -593,11 +590,11 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
         raise Exception("Jobs file should contain at most one .crv entry, %s found" % (len(jobs_crv)))
     if len(jobs_crv) > 0:
         crv = os.path.join(working_dir, jobs_crv[0].get('inputFile'))
-        jobs_crv[0].set('inputFile', getShortPath(crv))
+        jobs_crv[0].set('inputFile', os.path.basename(crv))
         copyNoReplace(crv, output_dir)
 
     # Write the modified .jobs file
-    with open(os.path.join(output_dir, getShortPath(jobsFile)), 'xb') as doc:
+    with open(os.path.join(output_dir, os.path.basename(jobsFile)), 'xb') as doc:
         doc.write(etree.tostring(jobs_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
     par_files = []
@@ -623,12 +620,12 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
         iidm = scenario.get('iidmFile')
         if iidm == None:
             iidm = base_iidm
-        output_scenario.set('iidmFile', getShortPath(iidm))
+        output_scenario.set('iidmFile', os.path.basename(iidm))
         
         dyd = scenario.get('dydFile')
         if dyd == None:
             dyd = base_dyd
-        output_scenario.set('dydFile', getShortPath(dyd))
+        output_scenario.set('dydFile', os.path.basename(dyd))
 
         networkPar = scenario.get('networkParFile')
         if networkPar != None:
@@ -663,12 +660,12 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
             dyd_par = os.path.join(working_dir, blackBox.attrib['parFile'])
             if not fileIsInList(dyd_par, par_files):
                 par_files.append(dyd_par)
-            blackBox.set('parFile', getShortPath(dyd_par))
+            blackBox.set('parFile', os.path.basename(dyd_par))
 
         if len(root.findall('.//' + dyd_prefix_root_string + 'unitDynamicModel', dyd_namespace)) != 0:
             raise NotImplementedError('Consider using precompiled models for systematic analyses')
 
-        output_dyd = os.path.join(output_dir, getShortPath(dyd_file))
+        output_dyd = os.path.join(output_dir, os.path.basename(dyd_file))
         with open(output_dyd, 'xb') as doc:
             doc.write(etree.tostring(root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
@@ -683,7 +680,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
     if len(jobs_networkPar) != 1:
         raise Exception("Jobs file should contain exactly one networkParFile entry, %s found" % (len(jobs_networkPar)))
     networkParFile = os.path.join(working_dir, jobs_networkPar[0].get('parFile'))
-    jobs_networkPar[0].set('parFile', getShortPath(networkParFile))
+    jobs_networkPar[0].set('parFile', os.path.basename(networkParFile))
     if not fileIsInList(networkParFile, par_files):
         copyNoReplace(networkParFile, output_dir)
 
