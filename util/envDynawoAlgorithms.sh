@@ -243,6 +243,9 @@ set_environnement() {
   export_var_env_force DYNAWO_ALGORITHMS_ENV_DYNAWO_ALGORITHMS=$SCRIPT
   export_var_env_force DYNAWO_ENV_DYNAWO=$SCRIPT
   export_var_env DYNAWO_ALGORITHMS_PYTHON_COMMAND="python"
+  if [ ! -x "$(command -v ${DYNAWO_ALGORITHMS_PYTHON_COMMAND})" ]; then
+    error_exit "Your python interpreter \"${DYNAWO_ALGORITHMS_PYTHON_COMMAND}\" does not work. Use export DYNAWO_ALGORITHMS_PYTHON_COMMAND=<Python Interpreter> in your myEnvDynawoAlgorithms.sh."
+  fi
   export_var_env_force DYNAWO_CURVES_TO_HTML_DIR=$DYNAWO_HOME/sbin/curvesToHtml
   export_var_env_force DYNAWO_INSTALL_DIR=$DYNAWO_HOME
   export_var_env DYNAWO_INSTALL_OPENMODELICA=$DYNAWO_HOME/OpenModelica
@@ -396,7 +399,10 @@ build_doc_dynawo_algorithms() {
 
 test_doxygen_doc_dynawo_algorithms() {
   if [ -f $DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen/warnings.txt  ] ; then
-    nb_warnings=$(wc -l $DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen/warnings.txt | cut -f1 -d' ')
+    rm -f $DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen/warnings_filtered.txt
+    # need to filter "return type of member (*) is not documented" as it is a doxygen bug detected on 1.8.17 that will be solved in 1.8.18
+    grep -Fvf $DYNAWO_ALGORITHMS_HOME/util/warnings_to_filter.txt $DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen/warnings.txt > $DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen/warnings_filtered.txt
+    nb_warnings=$(wc -l $DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen/warnings_filtered.txt | awk '{print $1}')
     if [ ${nb_warnings} -ne 0 ]; then
       echo "===================================="
       echo "| Result of doxygen doc generation |"
@@ -407,7 +413,6 @@ test_doxygen_doc_dynawo_algorithms() {
     fi
   fi
 }
-
 
 build_tests() {
   clean_dynawo_algorithms || error_exit
@@ -445,6 +450,18 @@ build_tests_coverage() {
   if [ "$DYNAWO_RESULTS_SHOW" = true ] ; then
     $DYNAWO_BROWSER $DYNAWO_ALGORITHMS_BUILD_DIR/coverage/index.html
   fi
+  cp $DYNAWO_ALGORITHMS_BUILD_DIR/coverage/coverage.info $DYNAWO_ALGORITHMS_HOME/build
+  if [ -d "$DYNAWO_ALGORITHMS_HOME/build/coverage-sonar" ]; then
+    rm -rf "$DYNAWO_ALGORITHMS_HOME/build/coverage-sonar"
+  fi
+  mkdir -p $DYNAWO_ALGORITHMS_HOME/build/coverage-sonar || error_exit "Impossible to create $DYNAWO_ALGORITHMS_HOME/build/coverage-sonar."
+  cd $DYNAWO_ALGORITHMS_HOME/build/coverage-sonar
+  for file in $(find $DYNAWO_ALGORITHMS_BUILD_DIR -name "*.gcno" | grep -v "/test/"); do
+    cpp_file_name=$(basename $file .gcno)
+    cpp_file=$(find $DYNAWO_ALGORITHMS_HOME/sources -name "$cpp_file_name" 2> /dev/null)
+    gcov -pb $cpp_file -o $file > /dev/null
+  done
+  find $DYNAWO_ALGORITHMS_HOME/build/coverage-sonar -type f -not -name "*dynawo-algorithms*" -exec rm -f {} \;
 }
 
 unittest_gdb() {
