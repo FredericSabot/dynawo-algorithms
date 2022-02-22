@@ -1,0 +1,4 @@
+Component_type,Component_name,Param_id,L_bound,U_bound
+Load,LOAD-3,p0,44.99,45.01
+Line,LINE-2-3,r,0,0.1
+Line,LINE-2-3,x,0.1,10
