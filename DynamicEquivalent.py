@@ -3,8 +3,9 @@ import csv
 import random
 import argparse
 import os
-from math import sqrt
+from math import sqrt, ceil
 import subprocess
+from matplotlib import rcParams
 import numpy as np
 from collections import OrderedDict
 import matplotlib.pyplot as plt
@@ -230,6 +231,8 @@ if __name__ == "__main__":
                         help='Working directory')
     parser.add_argument('--fic_MULTIPLE', type=str, required=True,
                         help='Input file containing the different scenarios to run')
+    parser.add_argument('--reduced_fic_MULTIPLE', type=str, required=True,
+                        help='Input file containing the different scenarios to run for the reduced model')
     parser.add_argument('--nb_threads', type=str, required=True,
                         help="Number of threads (to use in the SA's)")
     # Random runs
@@ -251,6 +254,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     args.fic_MULTIPLE = os.path.join(args.working_dir, args.fic_MULTIPLE)
+    args.reduced_fic_MULTIPLE = os.path.join(args.working_dir, args.reduced_fic_MULTIPLE)
     args.csv_par = os.path.join(args.working_dir, args.csv_par)
     args.csv_iidm = os.path.join(args.working_dir, args.csv_iidm)
     args.csv_par_bounds = os.path.join(args.working_dir, args.csv_par_bounds)
@@ -281,22 +285,38 @@ if __name__ == "__main__":
         mean = np.mean(curves, axis=2)
         sigma = np.std(curves, axis=2, ddof=1) # ddof = 1 means divide by sqrt(N-1) instead of sqrt(N)
 
-        if run_id >= 4: # Do at least 5 runs (and avoid div by 0)
-            std_error = sigma / mean[:,:,[0 for i in range(sigma.shape[2])]] / sqrt(run_id + 1) # Normalise with respect to value at t = 0 (avoid div by 0)
-            print('\n\n\nStd error: %f%%\nRun_id: %d\n\n\n' % (std_error.max()*100, run_id))
+        if run_id >= 4: # Do at least 5 runs
+            std_error = sigma / abs(mean[:,:,[0 for i in range(sigma.shape[2])]]) / sqrt(run_id + 1) # Normalise with respect to value at t = 0 (avoid div by 0)
+            print('Run_id: %d, Std error: %f%%' % (run_id, std_error.max()*100))
             if std_error.max() < sigma_thr: 
                 print("Threshold reached in %d iterations" % (run_id + 1))
                 break
     if std_error.max() > sigma_thr:
         print("Warning: maximum number of random runs (%d) reached with sigma (%f) > tol (%f)" % (args.nb_runs_random, std_error.max(), sigma_thr))
-    
+
+    disturb = curves.shape[1]
+    sqrt_d = int(ceil(sqrt(disturb)))
+    rcParams['figure.figsize'] = 12, 7.2
+    for c in range(curves.shape[0]):
+        fig, axs = plt.subplots(sqrt_d, sqrt_d)
+        for d in range(curves.shape[1]):
+            axs[d//sqrt_d, d%sqrt_d].set_title('Disturbance %d' % d)
+            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:], label='Mean')
+            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] + 3*sigma[c,d,:], label='Mean + 3 sigma')
+            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] - 3*sigma[c,d,:], label='Mean - 3 sigma')
+
+            for i in range(run_id):
+                axs[d//sqrt_d, d%sqrt_d].plot(curves[c,d,i,:])
+            axs[d//sqrt_d, d%sqrt_d].legend()
+        plt.savefig('Random%d.png' % c)
+        plt.close()
 
     # Part 2: optimisation
-    dyn_bounds_dic = DynamicParametersBounds(args.csv_par_bounds, args.fic_MULTIPLE)
+    dyn_bounds_dic = DynamicParametersBounds(args.csv_par_bounds, args.reduced_fic_MULTIPLE)
     dyn_bounds = dyn_bounds_dic.toBoundsList()
     nb_dyn_params = len(dyn_bounds)
 
-    iidm_bounds_dic = StaticParametersBounds(args.csv_iidm_bounds, args.fic_MULTIPLE)
+    iidm_bounds_dic = StaticParametersBounds(args.csv_iidm_bounds, args.reduced_fic_MULTIPLE)
     iidm_bounds = iidm_bounds_dic.toBoundsList()
 
     bounds = dyn_bounds + iidm_bounds
@@ -304,14 +324,14 @@ if __name__ == "__main__":
     run_id = 0
     np.random.seed(int(2e9)) # Different seed that the one used for the random runs, although the random generator is a priori different anyway
     # 2e9 is around half the max 32-bit unsigned int
-    def fobj(v_lst):
+    def fobj2(v_lst):
         global run_id
         dyn_data_dic = dyn_bounds_dic.valueListToDict(v_lst[:nb_dyn_params])
         static_data_dic = iidm_bounds_dic.valueListToDict(v_lst[nb_dyn_params:])
 
         output_dir_name = os.path.join('Optimisation', "It_%03d" % run_id)
         output_dir = os.path.join(args.working_dir, output_dir_name)
-        RandomParameters.writeParametricSAInputs(args.working_dir, args.fic_MULTIPLE, output_dir_name, static_data_dic, dyn_data_dic, run_id)
+        RandomParameters.writeParametricSAInputs(args.working_dir, args.reduced_fic_MULTIPLE, output_dir_name, static_data_dic, dyn_data_dic, run_id)
         cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
                 '--output' , 'aggregatedResults.xml', '--nbThreads', args.nb_threads]
         subprocess.run(cmd)
@@ -327,13 +347,16 @@ if __name__ == "__main__":
         obj = np.mean(obj, axis=1) # average over disturbances
         obj = np.sum(obj) # sum over curve_names (typically P and Q at point of common coupling)
 
-        print("\n\nRun id: %d\n\n" % run_id)
+        print("Run id: %d" % run_id)
         run_id += 1
 
-        return obj
+        return obj, curves
+    
+    def fobj(v_lst):
+        return fobj2(v_lst)[0]
 
     pop_size = 10
-    nb_iterations = 10
+    nb_iterations = 50
     result = list(de(fobj, bounds, popsize=pop_size, its=nb_iterations))
     
     for r in result:
@@ -343,4 +366,19 @@ if __name__ == "__main__":
     print("Best run id: %d" % best_run_id)
     _, x, f = zip(*result)
     plt.plot(f)
-    plt.show()
+    plt.savefig('Convergence.png')
+    plt.close()
+
+    _, curves = fobj2(x[-1])
+
+    for c in range(curves.shape[0]):
+        fig, axs = plt.subplots(sqrt_d, sqrt_d)
+        for d in range(curves.shape[1]):
+            axs[d//sqrt_d, d%sqrt_d].set_title('Disturbance %d' % d)
+            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:], label='Mean')
+            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] + 3*sigma[c,d,:], label='Mean + 3 sigma')
+            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] - 3*sigma[c,d,:], label='Mean - 3 sigma')
+
+            axs[d//sqrt_d, d%sqrt_d].plot(curves[c,d,:], label='Fit')
+            axs[d//sqrt_d, d%sqrt_d].legend()
+        plt.savefig('Fit%d.png' % c)

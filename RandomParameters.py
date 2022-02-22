@@ -222,8 +222,8 @@ def randomiseDynamicParams(fic_MULTIPLE, input_csv):
                     index = input_pars.index(parFile)
                 except ValueError:
                     raise Exception("Input par %s given in %s is not used in the SA" % (parFile, input_csv))
-                for parameter in pars_root[index].findall('.//' + pars_prefix_root_string[i] + 'par[@name="' + paramId + '"]', pars_namespace[i]):
-                    par_set_ids.append(paramSetId)
+                for parameter in pars_root[index].findall('.//' + pars_prefix_root_string[index] + 'par[@name="' + paramId + '"]', pars_namespace[index]):
+                    par_set_ids.append(parameter.getparent().get('id'))
                     param_ids.append(paramId)
                     param_values.append(getRandom(parameter.attrib['value'], parameter.attrib['type'], distribution, params))
             else:
@@ -472,8 +472,8 @@ def writeStaticParams(static_parameters_dic, output_dir):
         slack_load_index = n.get_loads().index[0] #TODO: allow to specify which load is used as the slack
         slack = {'p0' : delta_P + n.get_loads().get('p0').get(slack_load_index), 'q0' : delta_Q + n.get_loads().get('q0').get(slack_load_index)}
         n.update_loads(pd.DataFrame(slack, index = [slack_load_index]))
-
-        pp.loadflow.run_ac(n)
+        parameters = pp.loadflow.Parameters(read_slack_bus=True, distributed_slack=False, write_slack_bus=False, balance_type=pp.loadflow.BalanceType.PROPORTIONAL_TO_LOAD)
+        pp.loadflow.run_ac(n, parameters)
 
         output_iidm = os.path.join(output_dir, os.path.basename(input_iidm))
         if os.path.exists(output_iidm):
@@ -484,6 +484,23 @@ def writeStaticParams(static_parameters_dic, output_dir):
             [file, ext] = output_iidm.rsplit('.', 1)
             if ext != 'xiidm':
                 os.rename(file + '.xiidm', output_iidm)
+            
+            # Removes the slack extension that powsybl writes even though write_slack_bus=False
+            # By doing so, we also remove all other extensions
+            iidm = etree.parse(output_iidm)
+            iidm_root = iidm.getroot()
+            iidm_namespace = iidm_root.nsmap
+            iidm_prefix_root = iidm_root.prefix
+            if iidm_prefix_root is None:
+                iidm_prefix_root_string = ''
+            else:
+                iidm_prefix_root_string = iidm_prefix_root + ':'
+
+            for extension in iidm_root.findall('.//' + iidm_prefix_root_string + 'extension', iidm_namespace):
+                extension.getparent().remove(extension)
+
+            with open(output_iidm, 'wb') as doc:
+                doc.write(etree.tostring(iidm_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
  
 def addSuffix(s, suffix):
     """
@@ -567,14 +584,6 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
     # The dyd file given in the initial .jobs has to be replaced by different ones that correctly links to the random .par
     jobs_dyd[0].getparent().remove(jobs_dyd[0])
 
-    # Copy solver parFile
-    jobs_solverPar = jobs_root.findall('.//' + '{' + jobs_namespace_uri + '}' + 'solver[@parFile]')
-    if len(jobs_solverPar) != 1:
-        raise Exception("Jobs file should contain exactly one solverFile entry, %s found" % (len(jobs_solverPar)))
-    solverPar = os.path.join(working_dir, jobs_solverPar[0].get('parFile'))
-    jobs_solverPar[0].set('parFile', os.path.basename(solverPar))
-    copyNoReplace(solverPar, output_dir)
-
     # Copy .crt
     jobs_crt = jobs_root.findall('.//' + '{' + jobs_namespace_uri + '}' + 'criteria[@criteriaFile]')
     if len(jobs_crt) > 1:
@@ -584,7 +593,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
         jobs_crt[0].set('criteriaFile', os.path.basename(crt))
         copyNoReplace(crt, output_dir)
     
-    # Copy .crv curves inputFile=
+    # Copy .crv
     jobs_crv = jobs_root.findall('.//' + '{' + jobs_namespace_uri + '}' + 'curves[@inputFile]')
     if len(jobs_crv) > 1:
         raise Exception("Jobs file should contain at most one .crv entry, %s found" % (len(jobs_crv)))
@@ -674,6 +683,15 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, output_dir_name, static_d
     for par_file in par_files:
         if not fileIsInList(par_file, list(dyn_data_dic.keys())):
             copyNoReplace(par_file, output_dir)
+    
+    # Copy solver parFile
+    jobs_solverPar = jobs_root.findall('.//' + '{' + jobs_namespace_uri + '}' + 'solver[@parFile]')
+    if len(jobs_solverPar) != 1:
+        raise Exception("Jobs file should contain exactly one solverFile entry, %s found" % (len(jobs_solverPar)))
+    solverPar = os.path.join(working_dir, jobs_solverPar[0].get('parFile'))
+    jobs_solverPar[0].set('parFile', os.path.basename(solverPar))
+    if not fileIsInList(solverPar, par_files):
+        copyNoReplace(solverPar, output_dir)
 
     # Copy network parFile
     jobs_networkPar = jobs_root.findall('.//' + '{' + jobs_namespace_uri + '}' + 'network[@parFile]')
