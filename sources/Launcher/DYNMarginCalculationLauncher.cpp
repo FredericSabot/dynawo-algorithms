@@ -97,6 +97,9 @@ MarginCalculationLauncher::launch() {
   }
   const boost::shared_ptr<LoadIncrease>& loadIncrease = marginCalculation->getLoadIncrease();
   const boost::shared_ptr<Scenarios>& scenarios = marginCalculation->getScenarios();
+  if (!scenarios) {
+    throw DYNAlgorithmsError(SystematicAnalysisTaskNotFound);
+  }
   const std::string& baseJobsFile = scenarios->getJobsFile();
   const std::vector<boost::shared_ptr<Scenario> >& events = scenarios->getScenarios();
 #ifdef WITH_OPENMP
@@ -258,6 +261,11 @@ MarginCalculationLauncher::computeGlobalMargin(const boost::shared_ptr<LoadIncre
     SimulationResult result;
     findOrLaunchLoadIncrease(loadIncrease, newVariation, tolerance, result);
     results_[idx].setStatus(result.getStatus());
+    // If at some point loadIncrease for 0. is launched and is not working no need to continue
+    std::map<double, SimulationResult, dynawoDoubleLess>::const_iterator itZero = loadIncreaseCache_.find(0.);
+    if (itZero != loadIncreaseCache_.end() && !itZero->second.getSuccess())
+      return 0.;
+
     if (result.getSuccess()) {
       std::queue< task_t > toRun;
       std::vector<size_t> eventsIds;
@@ -305,6 +313,10 @@ MarginCalculationLauncher::computeGlobalMargin(const boost::shared_ptr<LoadIncre
 void
 MarginCalculationLauncher::findAllLevelsBetween(const double minVariation, const double maxVariation, const double tolerance,
     const std::vector<size_t>& eventIdxs, std::queue< task_t >& toRun) {
+  if (eventIdxs.empty()) {
+    toRun = std::queue< task_t >();
+    return;
+  }
   unsigned nbMaxToAdd = nbThreads_/eventIdxs.size();
   if (nbMaxToAdd == 0) nbMaxToAdd = 1;
   double newVariation = round((minVariation + maxVariation)/2.);
@@ -352,6 +364,13 @@ MarginCalculationLauncher::computeLocalMargin(const boost::shared_ptr<LoadIncrea
     SimulationResult result;
     findOrLaunchLoadIncrease(loadIncrease, newVariation, tolerance, result);
     results_[idx].setStatus(result.getStatus());
+    // If at some point loadIncrease for 0. is launched and is not working no need to continue
+    std::map<double, SimulationResult, dynawoDoubleLess>::const_iterator itZero = loadIncreaseCache_.find(0.);
+    if (itZero != loadIncreaseCache_.end() && !itZero->second.getSuccess()) {
+      for (size_t i = 0; i < results.size(); ++i)
+        results[i] = 0.;
+      return 0.;
+    }
 
     if (result.getSuccess()) {
       if (maxLoadVarForLoadIncrease < newVariation)
@@ -548,9 +567,8 @@ MarginCalculationLauncher::launchScenario(const MultiVariantInputs& inputs, cons
     subModels.insert(subModels.end(), subModelsToAdd.begin(), subModelsToAdd.end());
     subModelsToAdd = modelMulti->findSubModelByLib(DDBDir + "/TfoTrippingEvent" + DYN::sharedLibraryExtension());
     subModels.insert(subModels.end(), subModelsToAdd.begin(), subModelsToAdd.end());
-    subModelsToAdd = modelMulti->findSubModelByLib(DDBDir + "/EventConnectedStatus" + DYN::sharedLibraryExtension());
-    subModels.insert(subModels.end(), subModelsToAdd.begin(), subModelsToAdd.end());
     subModelsToAdd = modelMulti->findSubModelByLib(DDBDir + "/EventQuadripoleConnection" + DYN::sharedLibraryExtension());
+    subModels.insert(subModels.end(), subModelsToAdd.begin(), subModelsToAdd.end());
     for (std::vector<boost::shared_ptr<DYN::SubModel> >::const_iterator it = subModels.begin(); it != subModels.end(); ++it) {
       double tEvent = (*it)->findParameterDynamic("event_tEvent").getValue<double>();
       (*it)->setParameterValue("event_tEvent", DYN::PAR, tEvent - (100. - variation) * inputs_.getTLoadIncreaseVariationMax() / 100., false);
@@ -567,12 +585,6 @@ void
 MarginCalculationLauncher::findOrLaunchLoadIncrease(const boost::shared_ptr<LoadIncrease>& loadIncrease,
     const double variation, const double tolerance, SimulationResult& result) {
   Trace::info(logTag_) << DYNAlgorithmsLog(VariationValue, variation) << Trace::endline;
-  if (nbThreads_ == 1) {
-    inputs_.readInputs(workingDirectory_, loadIncrease->getJobsFile(), 1);
-    inputs_.setCurrentVariant(0.);
-    launchLoadIncrease(loadIncrease, variation, result);
-    return;
-  }
 
   std::map<double, SimulationResult, dynawoDoubleLess>::const_iterator itVariation = loadIncreaseCache_.find(variation);
   if (itVariation != loadIncreaseCache_.end()) {
@@ -580,20 +592,36 @@ MarginCalculationLauncher::findOrLaunchLoadIncrease(const boost::shared_ptr<Load
     result = itVariation->second;
     return;
   }
-  std::vector<double> variationsToLaunch;
-  if (loadIncreaseCache_.empty()) {
-    // First time we call this, we know we have at least 2 threads.
-    variationsToLaunch.push_back(100.);
+
+  if (nbThreads_ == 1) {
+    inputs_.readInputs(workingDirectory_, loadIncrease->getJobsFile(), 1);
+    inputs_.setCurrentVariant(0.);
+    launchLoadIncrease(loadIncrease, variation, result);
+
+    // Hack to add 0. if the load increase is below 50. as we know we never did 0. in the first place
+    if (variation < 50. && !result.getSuccess() && loadIncreaseCache_.find(0.) == loadIncreaseCache_.end()) {
+      Trace::info(logTag_) << DYNAlgorithmsLog(VariationValue, 0.) << Trace::endline;
+      SimulationResult result0;
+      inputs_.readInputs(workingDirectory_, loadIncrease->getJobsFile(), 1);
+      inputs_.setCurrentVariant(0.);
+      launchLoadIncrease(loadIncrease, 0., result0);
+      loadIncreaseCache_.insert(std::make_pair(0., result0));
+    }
+    return;
   }
+
+  std::set<double, dynawoDoubleLess> variationsToLaunch;
+  variationsToLaunch.insert(variation);
+
+  // Hack to add 0. if the load increase is below 50. as we know we never did 0. in the first place
+  if (loadIncreaseCache_.find(0.) == loadIncreaseCache_.end() && variation < 50.)
+    variationsToLaunch.insert(0.);
   if (static_cast<int>(variationsToLaunch.size()) < nbThreads_) {
     std::queue< std::pair<double, double> > levels;
     double closestVariationBelow = 0.;
     double closestVariationAbove = 100.;
     for (std::map<double, SimulationResult, dynawoDoubleLess>::const_iterator it = loadIncreaseCache_.begin(),
         itEnd = loadIncreaseCache_.end(); it != itEnd; ++it) {
-      if (!it->second.getSuccess()) {
-        continue;
-      }
       if (closestVariationBelow < it->first && it->first < variation)
         closestVariationBelow = it->first;
       if (it->first < closestVariationAbove && variation < it->first)
@@ -603,25 +631,27 @@ MarginCalculationLauncher::findOrLaunchLoadIncrease(const boost::shared_ptr<Load
     while (!levels.empty() && static_cast<int>(variationsToLaunch.size()) < nbThreads_) {
       std::pair<double, double> currentLevel = levels.front();
       levels.pop();
-      double nextVariation = round((currentLevel.first + currentLevel.second)/2);
-      variationsToLaunch.push_back(nextVariation);
+      double nextVariation = round((currentLevel.first + currentLevel.second)/2.);
+      variationsToLaunch.insert(nextVariation);
       if (currentLevel.second - nextVariation > tolerance)
         levels.push(std::make_pair(nextVariation, currentLevel.second));
       if (DYN::doubleNotEquals(nextVariation, 50.) && nextVariation - currentLevel.first > tolerance)
         levels.push(std::make_pair(currentLevel.first, nextVariation));
     }
   }
-  for (unsigned int i=0; i < variationsToLaunch.size(); ++i) {
-    loadIncreaseCache_.insert(std::make_pair(variationsToLaunch[i], SimulationResult()));  // Reserve memory
-    createScenarioWorkingDir(loadIncrease->getId(), variationsToLaunch[i]);
+  for (std::set<double, dynawoDoubleLess>::iterator it = variationsToLaunch.begin(); it != variationsToLaunch.end(); ++it) {
+    loadIncreaseCache_.insert(std::make_pair(*it, SimulationResult()));  // Reserve memory
+    createScenarioWorkingDir(loadIncrease->getId(), *it);
   }
 
   inputs_.readInputs(workingDirectory_, loadIncrease->getJobsFile(), variationsToLaunch.size());
 
+  // For openmp we are forced to have a vector and not a set
+  std::vector<double> variationsToLaunchVector(variationsToLaunch.begin(), variationsToLaunch.end());
 #pragma omp parallel for schedule(dynamic, 1)
-  for (unsigned int i=0; i < variationsToLaunch.size(); ++i) {
+  for (unsigned int i = 0; i < variationsToLaunchVector.size(); ++i) {
     inputs_.setCurrentVariant(i);
-    launchLoadIncrease(loadIncrease, variationsToLaunch.at(i), loadIncreaseCache_.at(variationsToLaunch.at(i)));
+    launchLoadIncrease(loadIncrease, variationsToLaunchVector.at(i), loadIncreaseCache_.at(variationsToLaunchVector.at(i)));
   }
   assert(loadIncreaseCache_.find(variation) != loadIncreaseCache_.end());
   result = loadIncreaseCache_.at(variation);

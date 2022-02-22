@@ -363,11 +363,9 @@ config_dynawo_algorithms() {
     -DBOOST_ROOT=$DYNAWO_BOOST_HOME/ \
     -DBOOST_ROOT_DEFAULT:STRING=FALSE \
     -DLIBZIP_HOME=$DYNAWO_LIBZIP_HOME \
-    -DCMAKE_MODULE_PATH=$DYNAWO_HOME/share/cmake \
     -DDYNAWO_PYTHON_COMMAND="$DYNAWO_ALGORITHMS_PYTHON_COMMAND" \
     $CMAKE_OPTIONAL \
     -G "$DYNAWO_CMAKE_GENERATOR" \
-    "-DCMAKE_PREFIX_PATH=$DYNAWO_LIBXML_HOME;$DYNAWO_HOME/share" \
     $DYNAWO_ALGORITHMS_SRC_DIR
   RETURN_CODE=$?
   return ${RETURN_CODE}
@@ -602,6 +600,7 @@ deploy_dynawo_algorithms() {
   cp $DYNAWO_ALGORITHMS_INSTALL_DIR/lib/* lib/.
   cp $DYNAWO_ALGORITHMS_INSTALL_DIR/include/* include/.
   cp -r $DYNAWO_ALGORITHMS_INSTALL_DIR/share/* share/.
+  cp $DYNAWO_ALGORITHMS_INSTALL_DIR/dynawo-algorithms.sh .
 
   if [ -d "$DYNAWO_ALGORITHMS_INSTALL_DIR/doxygen" ]; then
     mkdir -p doxygen
@@ -638,6 +637,7 @@ create_distrib() {
   cp ../bin/* dynawo-algorithms/bin/
   cp ../lib/* dynawo-algorithms/lib/.
   cp -r ../share/* dynawo-algorithms/share/
+  cp ../dynawo-algorithms.sh dynawo-algorithms/
   # combines dictionaries mapping
   cat $DYNAWO_HOME/share/dictionaries_mapping.dic | grep -v -F // | grep -v -e '^$' >> dynawo-algorithms/share/dictionaries_mapping.dic
   cp $DYNAWO_HOME/sbin/timeline_filter/timelineFilter.py dynawo-algorithms/bin/.
@@ -684,10 +684,12 @@ create_distrib_with_headers() {
   cp ../include/* dynawo-algorithms/include/
   cp ../lib/* dynawo-algorithms/lib/.
   cp -r ../share/* dynawo-algorithms/share/
+  cp ../dynawo-algorithms.sh dynawo-algorithms/
   # combines dictionaries mapping
   cat $DYNAWO_HOME/share/dictionaries_mapping.dic | grep -v -F // | grep -v -e '^$' >> dynawo-algorithms/share/dictionaries_mapping.dic
   cp $DYNAWO_HOME/sbin/timeline_filter/timelineFilter.py dynawo-algorithms/bin/.
   zip -r -y ../$ZIP_FILE dynawo-algorithms/
+  zip -r -y ../$ZIP_FILE dynawo-algorithms/dynawo-algorithms.sh
   cd $DYNAWO_ALGORITHMS_DEPLOY_DIR
 
   # remove temp directory
