@@ -1198,7 +1198,7 @@ case $MODE in
   CS-gdb)
     launch_CS_gdb ${ARGS} || error_exit "Dynawo simulation failed"
     ;;
-  
+
   CTC-gdb)
     launch_CTC_gdb ${ARGS} || error_exit "Critical time calculation failed"
     ;;
