@@ -1,4 +1,3 @@
-from locale import T_FMT
 from lxml import etree
 import argparse
 import pypowsybl as pp
@@ -6,7 +5,7 @@ import pandas as pd
 import os
 import shutil
 import Protections
-
+from N_1Analysis import *
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser('Generates the fic_MULTIPLE and dyd files necessary to perform a N-2 analysis on the input iidm. '
@@ -30,8 +29,8 @@ if __name__ == "__main__":
 
     working_dir = args.working_dir
     output_dir = os.path.join(working_dir, args.output)
-    full_name = os.path.join(working_dir, args.name)
-    name = args.name
+    full_network_name = os.path.join(working_dir, args.name)
+    network_name = args.name
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -51,21 +50,20 @@ if __name__ == "__main__":
 
     # Create fic_multiple file
     fic_root = etree.Element(fic_rootName, nsmap=fic_namespace_map)
-    scenarios_attrib = {'jobsFile': name + '.jobs'}
+    scenarios_attrib = {'jobsFile': network_name + '.jobs'}
     scenarios = etree.SubElement(fic_root, etree.QName(namespace, 'scenarios'), scenarios_attrib)
 
     # Read inputs
-    dyd_root = etree.parse(full_name + '.dyd', XMLparser).getroot()
-    par_root = etree.parse(full_name + '.par', XMLparser).getroot()
+    dyd_root = etree.parse(full_network_name + '.dyd', XMLparser).getroot()
+    par_root = etree.parse(full_network_name + '.par', XMLparser).getroot()
 
     # Read network
-    n = pp.network.load(full_name + '.iidm')
+    n = pp.network.load(full_network_name + '.iidm')
     lines = n.get_lines()
     gens = n.get_generators()
 
     # Base case (no faults)
-    scenario_attrib = {'id': 'Base'}
-    scenario =  etree.SubElement(scenarios, etree.QName(namespace, 'scenario'), scenario_attrib)
+    add_scenario_to_fic_scenarios(scenarios, namespace, 'Base', with_dyd=False)
 
     # Only consider lines fault/disconnections for now (esp. since will use ~node-breaker later)
     # Fault on each end of the line + disconnection of the line + CB failure
@@ -83,33 +81,20 @@ if __name__ == "__main__":
     #   - remove the fault at 200ms
 
     t_init = 5
-    t_clearing = '{}'.format(t_init + 0.1)
-    t_backup = '{}'.format(t_init + 0.2)
-    t_init = '{}'.format(t_init)
-    r_fault = 0.0001
-    x_fault = 0.0001
+    t_clearing = str(t_init + 0.1)
+    t_backup = str(t_init + 0.2)
+    t_init = str(t_init)
+    r_fault = str(0.0001)
+    x_fault = str(0.0001)
 
     # Initiating fault parameter set
-    fault_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'InitFault'})
-    par_attribs = [
-        {'type':'DOUBLE', 'name':'fault_RPu', 'value':'{}'.format(r_fault)},
-        {'type':'DOUBLE', 'name':'fault_XPu', 'value':'{}'.format(x_fault)},
-        {'type':'DOUBLE', 'name':'fault_tBegin', 'value': t_init},
-        {'type':'DOUBLE', 'name':'fault_tEnd', 'value': t_clearing}
-    ]
-    for par_attrib in par_attribs:
-        etree.SubElement(fault_par_set, etree.QName(namespace, 'par'), par_attrib)
+    add_bus_fault_parameters_to_etree(par_root, namespace, 'InitFault', t_init, t_clearing, r_fault, x_fault)
     
     # Initiating fault cleared in backup time parameter set
-    fault_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'InitFaultBackup'})
-    par_attribs[-1]['value'] = t_backup
-    for par_attrib in par_attribs:
-        etree.SubElement(fault_par_set, etree.QName(namespace, 'par'), par_attrib)
+    add_bus_fault_parameters_to_etree(par_root, namespace, 'InitFaultBackup', t_init, t_backup, r_fault, x_fault)
 
-    # Replacement fault parameter set
-    for lineID in lines.index:
-        replacement_fault_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'Replacement fault_' + lineID})
-        
+    # Replacement fault parameter sets
+    for lineID in lines.index:        
         voltage_level = lines.at[lineID, 'voltage_level1_id']
         Vb = float(n.get_voltage_levels().at[voltage_level, 'nominal_v']) * 1000
         Sb = 100e6  # 100MW is default base in Dynawo
@@ -117,56 +102,23 @@ if __name__ == "__main__":
         r_line = lines.at[lineID, 'r'] / Zb
         x_line = lines.at[lineID, 'x'] / Zb
 
-        r = r_fault + r_line
-        x = r_fault + x_line
+        r = float(r_fault) + r_line
+        x = float(r_fault) + x_line
 
-        par_attribs = [
-            {'type':'DOUBLE', 'name':'fault_RPu', 'value':'{}'.format(r)},
-            {'type':'DOUBLE', 'name':'fault_XPu', 'value':'{}'.format(x)},
-            {'type':'DOUBLE', 'name':'fault_tBegin', 'value': t_clearing}, # Starts when the initial fault is cleared
-            {'type':'DOUBLE', 'name':'fault_tEnd', 'value': t_backup}
-        ]
-        for par_attrib in par_attribs:
-            etree.SubElement(replacement_fault_par_set, etree.QName(namespace, 'par'), par_attrib)
+        add_bus_fault_parameters_to_etree(par_root, namespace, 'Replacement fault_' + lineID, t_init=t_clearing,  # Starts when the initial fault is cleared
+            t_clearing=t_backup, r_fault=r, x_fault=x)
 
     # Line disconnection parameter set
-    line_disc_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'LineDisc'})
-    par_attribs = [
-        {'type':'DOUBLE', 'name':'event_tEvent', 'value': t_clearing},
-        {'type':'BOOL', 'name':'event_disconnectOrigin', 'value':'true'},
-        {'type':'BOOL', 'name':'event_disconnectExtremity', 'value':'true'},
-    ]
-    for par_attrib in par_attribs:
-        etree.SubElement(line_disc_par_set, etree.QName(namespace, 'par'), par_attrib)
+    add_line_disc_parameters_to_etree(par_root, namespace, 'LineDisc', t_clearing)
 
     # Adjacent line disconnection parameter set
-    adj_line_disc_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'AdjLineDisc'})
-    par_attribs = [
-        {'type':'DOUBLE', 'name':'event_tEvent', 'value': t_backup},
-        {'type':'BOOL', 'name':'event_disconnectOrigin', 'value':'true'},
-        {'type':'BOOL', 'name':'event_disconnectExtremity', 'value':'true'}
-    ]
-    for par_attrib in par_attribs:
-        etree.SubElement(adj_line_disc_par_set, etree.QName(namespace, 'par'), par_attrib)
+    add_line_disc_parameters_to_etree(par_root, namespace, 'AdjLineDisc', t_backup)
 
     # Generator disconnection parameter set
-    gen_disc_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'GenDisc'})
-    par_attribs = [
-        {'type':'DOUBLE', 'name':'event_tEvent', 'value': t_clearing},
-        {'type':'BOOL', 'name':'event_stateEvent1', 'value':'true'}
-    ]
-    for par_attrib in par_attribs:
-        etree.SubElement(gen_disc_par_set, etree.QName(namespace, 'par'), par_attrib)
+    add_gen_disc_parameters_to_etree(par_root, namespace, 'GenDisc', t_clearing)
 
-    # Adjacent gen disconnection parameter set
-    adj_gen_disc_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : 'AdjGenDisc'})
-    par_attribs = [
-        {'type':'DOUBLE', 'name':'event_tEvent', 'value': t_backup},
-        {'type':'BOOL', 'name':'event_stateEvent1', 'value':'true'}
-    ]
-    for par_attrib in par_attribs:
-        etree.SubElement(adj_gen_disc_par_set, etree.QName(namespace, 'par'), par_attrib)
-
+    # Adjacent gen disconnection parameter set (not yet used)
+    add_gen_disc_parameters_to_etree(par_root, namespace, 'AdjGenDisc', t_backup)
 
     bus2lines = Protections.get_buses_to_lines(n)
 
@@ -177,49 +129,35 @@ if __name__ == "__main__":
 
                     scenarioID = lineID + '_end{}-CB_end{}-'.format(fault_side, CB_fail_side) + adj_lineID
                     # Add scenarios to the fic_MULTIPLE.xml
-                    scenario_attrib = {'id': scenarioID, 'dydFile': scenarioID + '.dyd'}
-                    scenario =  etree.SubElement(scenarios, etree.QName(namespace, 'scenario'), scenario_attrib)
+                    add_scenario_to_fic_scenarios(scenarios, namespace, scenarioID)
 
                     # Create dyd
                     dyd_root = etree.Element(dyd_rootName, nsmap=dyd_namespace_map)
                     # Initial fault
                     busID = '@' + lineID + '@@NODE{}@'.format(fault_side)
                     if fault_side == CB_fail_side:
-                        par_set_name = 'InitFaultBackup' # Fault cleared in backup up time
+                        parID = 'InitFaultBackup' # Fault cleared in backup up time
                     else:
-                        par_set_name = 'InitFault' # Fault "cleared" in normal time, but replaced by another one
-                    blackbox_attrib = {'id': 'FAULT_' + lineID + '_end{}'.format(fault_side), 'lib': 'NodeFault', 'parFile': name + '.par', 'parId': par_set_name}
-                    etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), blackbox_attrib)
-                    connect_attrib = {'id1': 'FAULT_' + lineID + '_end{}'.format(fault_side), 'var1': 'fault_terminal', 'id2': 'NETWORK', 'var2': busID + '_ACPIN'}
-                    etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
+                        parID = 'InitFault' # Fault "cleared" in normal time (but replaced by another one later on)
+                    
+                    # Initial fault
+                    init_faultID = 'FAULT_' + lineID + '_end' + str(fault_side)
+                    add_bus_fault_to_etree(dyd_root, namespace, network_name, init_faultID, busID, parID)
 
                     # Line disconnection
-                    blackbox_attrib = {'id': 'DISC_' + lineID, 'lib': 'EventQuadripoleDisconnection', 'parFile': name + '.par', 'parId': 'LineDisc'}
-                    etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), blackbox_attrib)
-                    connect_attrib = {'id1': 'DISC_' + lineID, 'var1': 'event_state1_value', 'id2': 'NETWORK', 'var2': lineID + '_state_value'}
-                    etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
-
+                    add_line_disc_to_etree(dyd_root, namespace, network_name, lineID)
                     # Adjacent line disconnection
-                    blackbox_attrib = {'id': 'DISC_' + adj_lineID, 'lib': 'EventQuadripoleDisconnection', 'parFile': name + '.par', 'parId': 'AdjLineDisc'}
-                    etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), blackbox_attrib)
-                    connect_attrib = {'id1': 'DISC_' + adj_lineID, 'var1': 'event_state1_value', 'id2': 'NETWORK', 'var2': adj_lineID + '_state_value'}
-                    etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
+                    add_line_disc_to_etree(dyd_root, namespace, network_name, adj_lineID, 'AdjLineDisc')
 
                     if fault_side != CB_fail_side:
                         # "Replacement" fault
-                        par_set_name = 'Replacement fault_' + lineID
-                        location = '@' + lineID + '@@NODE{}@_ACPIN'.format(CB_fail_side)
+                        parID = 'Replacement fault_' + lineID
+                        busID = '@' + lineID + '@@NODE{}@'.format(CB_fail_side)
 
-                        blackbox_attrib = {'id': 'Replacement fault', 'lib': 'NodeFault', 'parFile': name + '.par', 'parId': par_set_name}
-                        etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), blackbox_attrib)
-                        connect_attrib = {'id1': 'Replacement fault', 'var1': 'fault_terminal', 'id2': 'NETWORK', 'var2': location}
-                        etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
-
+                        add_bus_fault_to_etree(dyd_root, namespace, network_name, 'Replacement fault', busID, parID)
 
                     with open(os.path.join(output_dir, scenarioID + '.dyd'), 'wb') as doc:
                         doc.write(etree.tostring(dyd_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
-
-
 
 
     """
@@ -231,13 +169,13 @@ if __name__ == "__main__":
 
         # Create dyd
         dyd_root = etree.Element(dyd_rootName, nsmap=dyd_namespace_map)
-        blackbox_attrib = {'id': 'FAULT_' + busID, 'lib': 'NodeFault', 'parFile': name + '.par', 'parId': 'Fault'}
+        blackbox_attrib = {'id': 'FAULT_' + busID, 'lib': 'NodeFault', 'parFile': network_name + '.par', 'parId': 'Fault'}
         etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), blackbox_attrib)
         # Connect fault
         connect_attrib = {'id1': 'FAULT_' + busID, 'var1': 'fault_terminal', 'id2': 'NETWORK', 'var2': busID + '_ACPIN'}
         etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
         # Generator disconnection
-        blackbox_attrib = {'id': 'DISC_' + genID, 'lib': 'EventSetPointBoolean', 'parFile': name + '.par', 'parId': 'GenDisc'}
+        blackbox_attrib = {'id': 'DISC_' + genID, 'lib': 'EventSetPointBoolean', 'parFile': network_name + '.par', 'parId': 'GenDisc'}
         etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), blackbox_attrib)
         connect_attrib = {'id1': 'DISC_' + genID, 'var1': 'event_state1', 'id2': genID, 'var2': 'generator_switchOffSignal2'}
         etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
@@ -248,17 +186,18 @@ if __name__ == "__main__":
 
     with open(os.path.join(output_dir, 'fic_MULTIPLE.xml'), 'wb') as doc:
         doc.write(etree.tostring(fic_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
-    with open(os.path.join(output_dir, name + '.par'), 'wb') as doc:
+    with open(os.path.join(output_dir, network_name + '.par'), 'wb') as doc:
         doc.write(etree.tostring(par_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
-    shutil.copy(full_name + '.iidm', output_dir)
-    shutil.copy(full_name + '.dyd', output_dir)
-    # shutil.copy(full_name + '.par', output_dir)
-    shutil.copy(full_name + '.jobs', output_dir)
+    shutil.copy(full_network_name + '.iidm', output_dir)
+    shutil.copy(full_network_name + '.dyd', output_dir)
+    shutil.copy(full_network_name + '.jobs', output_dir)
 
-    if os.path.isfile(full_name + '.crv'):
-        shutil.copy(full_name + '.crv', output_dir)
-    if os.path.isfile(full_name + '.crt'):
-        shutil.copy(full_name + '.crt', output_dir)
+    if os.path.isfile(full_network_name + '.crv'):
+        shutil.copy(full_network_name + '.crv', output_dir)
+    if os.path.isfile(full_network_name + '.crt'):
+        shutil.copy(full_network_name + '.crt', output_dir)
+    if os.path.isfile(full_network_name + '.fsv'):
+        shutil.copy(full_network_name + '.fsv', output_dir)
 
     # ./myEnvDynawoAlgorithms.sh SA --directory examples/RBTS --input fic_MULTIPLE.xml --output aggregatedResults.xml --nbThreads 6
