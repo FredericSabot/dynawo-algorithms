@@ -154,6 +154,74 @@
                     "ignoreFailures": true
                 }
             ]
+        },        {
+            "name": "Python: Add dummy loads",
+            "type": "python",
+            "request": "launch",
+            "program": "Scripts/SecurityAssessment/DummyLoads.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--working_dir",
+                "/home/fsabot/Desktop/MyDynawoFiles/IEEE39/IEEE39_Auto_Protections",
+                "--name",
+                "IEEE39"
+            ]
+        },
+        {
+            "name": "Python: N-1 analysis",
+            "type": "python",
+            "request": "launch",
+            "program": "Scripts/SecurityAssessment/N-1Analysis.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--working_dir",
+                "/home/fsabot/Desktop/MyDynawoFiles/IEEE39/IEEE39_Auto_Protections/protected",
+                "--name",
+                "IEEE39"
+            ]
+        },
+        {
+            "name": "Python: N-2 analysis",
+            "type": "python",
+            "request": "launch",
+            "program": "Scripts/SecurityAssessment/N-2Analysis.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--working_dir",
+                "/home/fsabot/Desktop/MyDynawoFiles/IEEE39/IEEE39_Auto_Protections/protected",
+                "--name",
+                "IEEE39"
+            ]
+        },
+        {
+            "name": "Python: Analyse timelines",
+            "type": "python",
+            "request": "launch",
+            "program": "Scripts/SecurityAssessment/AnalyseTimelines.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--working_dir",
+                "/home/fsabot/Desktop/MyDynawoFiles/IEEE39/IEEE39_Auto_Protections/protected/N-2_Analysis",
+                "--name",
+                "IEEE39"
+            ]
+        },
+        {
+            "name": "Python: Add protections",
+            "type": "python",
+            "request": "launch",
+            "program": "Scripts/SecurityAssessment/Protections.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--working_dir",
+                "/home/fsabot/Desktop/MyDynawoFiles/IEEE39/IEEE39_Auto_Protections",
+                "--name",
+                "IEEE39",
+                "--output",
+                "protected",
+                "--randomise"
+                // "--special"
+            ]
         },
     ]
 }
