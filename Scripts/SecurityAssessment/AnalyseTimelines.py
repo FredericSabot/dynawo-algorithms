@@ -70,6 +70,7 @@ if __name__ == "__main__":
     count_occurences = {}
     Z_armings_dic = {}
     Z_disarmings_dic = {}
+    gen_disc_dic = {}
     for filename in filenames:
         ###
         # Filter events
@@ -83,6 +84,7 @@ if __name__ == "__main__":
             trip_timeline = []  # Timeline that only contains trip events
             Z_armings = []
             Z_disarmings = []
+            gen_disconnections = []
             for event in timeline_:
                 (time, model, event) = event.strip().split(' | ')
                 
@@ -96,6 +98,9 @@ if __name__ == "__main__":
                         Z_disarmings.append([time, model, event])
                     elif 'arming' in event:  # elif -> does not include disarmings
                         Z_armings.append([time, model, event])
+                
+                if 'GENERATOR : disconnecting' in event:
+                    gen_disconnections.append([time, model, event])
         
         Z_armings_dic[filename] = Z_armings
         Z_disarmings_dic[filename] = Z_disarmings
@@ -145,11 +150,21 @@ if __name__ == "__main__":
         remaining_load = (total_load - disconnected_load) * UFLS_ratio
 
         load_shedding = (total_load - remaining_load) / total_load * 100
+
+        # Check for execution problem/divergence
+        namespace_map = '{http://www.rte-france.com/dynawo}'
+        root = etree.parse(os.path.join(working_dir, "aggregatedResults.xml"), XMLparser).getroot()
+        execution_status = root.find('.//{}scenarioResults[@id="{}"]'.format(namespace_map, filename[9:-4])).get('status')
+
+        if execution_status == "DIVERGENCE":
+            load_shedding = 100.1  # Mark it as 100.1% load shedding to not affect averages, but still see there is a numerical issue
+        
+        if len(gen_disconnections) == 10:  # All machines are disconnected (not really a convergence issue)
+            load_shedding = 100
+
         output['Load shedding (%)'] = load_shedding
 
         # TODO: check for low voltages using the new final values API (load_terminal_V_re, and _im -> compute abs)
-        # TODO: check for execution problem/divergence
-        #   Mark it as 101% load shedding to not affect averages, but still see there is a numerical issue
 
         ###
         # Event counts
@@ -202,6 +217,7 @@ if __name__ == "__main__":
         output['Trip events'] = trip_timeline
         outputs[filename] = output
 
+    """
     ###
     # Create small variations of simulations files for cases with close events
     ###
@@ -311,7 +327,7 @@ if __name__ == "__main__":
 
     with open(os.path.join(output_dir, 'fic_MULTIPLE.xml'), 'wb') as doc:
         doc.write(etree.tostring(fic_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
-
+    """
 
     ###
     # Statistics
