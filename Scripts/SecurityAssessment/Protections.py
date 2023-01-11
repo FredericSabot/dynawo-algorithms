@@ -36,7 +36,7 @@ def get_adjacent_lines(bus_to_lines, network, lineID, side):
     return adj_lines
 
 
-def add_gen_speed_protection_and_params(dyd_root, par_root, namespace, network_name, genID, randomise, CB_time, CB_max_error, omega_max_error=0.01):
+def add_gen_speed_protection_and_params(dyd_root, par_root, namespace, network_name, genID, CB_time, randomise, CB_max_error, omega_max_error=0.01):
     protectionID = genID + '_Speed'
     speed_attrib = {'id': protectionID, 'lib': 'SpeedProtection', 'parFile': network_name + '.par', 'parId': protectionID}
     etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), speed_attrib)
