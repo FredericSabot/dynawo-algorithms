@@ -171,7 +171,7 @@
             "name": "Python: N-1 analysis",
             "type": "python",
             "request": "launch",
-            "program": "Scripts/SecurityAssessment/N-1Analysis.py",
+            "program": "Scripts/SecurityAssessment/N_1Analysis.py",
             "console": "integratedTerminal",
             "args": [
                 "--working_dir",
@@ -184,7 +184,7 @@
             "name": "Python: N-2 analysis",
             "type": "python",
             "request": "launch",
-            "program": "Scripts/SecurityAssessment/N-2Analysis.py",
+            "program": "Scripts/SecurityAssessment/N_2Analysis.py",
             "console": "integratedTerminal",
             "args": [
                 "--working_dir",

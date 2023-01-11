@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
                 if 'Distance protection zone' in event:
                     if 'disarming' in event:
-                        Z_disarmings.append([time, model, event])
+                        Z_disarmings.append([time, model, event])  # TODO: now consider the fact that when a zone trips, the others disarm
                     elif 'arming' in event:  # elif -> does not include disarmings
                         Z_armings.append([time, model, event])
                 
@@ -459,17 +459,8 @@ if __name__ == "__main__":
 
             trip_timeline = outputs[filename]['Trip events']
 
-            actual_trip_timeline = [(time, model, event) for (time, model, event) in trip_timeline if 'trip zone 2' in event or 'trip zone 3' in event]
-            fake_trip_timeline = [(time, model, event) for (time, model, event) in trip_timeline if 'trip zone 1' in event or 'trip zone 4' in event]
-
-            translated_fake_trip_timeline = []
-            for (time, model, event) in fake_trip_timeline:
-                if event == 'Distance protection trip zone 1':
-                    translated_fake_trip_timeline.append((time, model, 'Distance protection trip zone 2'))
-                elif event == 'Distance protection trip zone 4':
-                    translated_fake_trip_timeline.append((time, model, 'Distance protection trip zone 3'))
-                else:
-                    raise ValueError('')
+            slow_trip_timeline = [(time, model.strip('Slow'), event) for (time, model, event) in trip_timeline if 'Slow' in model]
+            fast_trip_timeline = [(time, model.strip('Fast'), event) for (time, model, event) in trip_timeline if 'Fast' in model]
 
             """
             same_order = True
@@ -490,28 +481,27 @@ if __name__ == "__main__":
             """
 
             same_order = True
-            for (time, model, event) in trip_timeline:
+            for (time, model, event) in slow_trip_timeline:
                 time = float(time)
                 found = False
-                for (fake_time, fake_model, fake_event) in translated_fake_trip_timeline:
-                    fake_time = float(fake_time)
-                    if fake_model == model and fake_event == event:
+                for (fast_time, fast_model, fast_event) in fast_trip_timeline:
+                    fast_time = float(fast_time)
+                    if fast_model == model and fast_event == event:
                         found = True
-                        continue
-                    elif not found:  # Look for events that occured after (time, model, event) in the original timeline,
-                        continue
+                        break
                     else:
-                        if fake_time + 0.07 < time:  # check if they can occur before the considered event
-                            same_order = False
-                            break
-
+                        continue
+                if found:
+                    if fast_time + 0.07 < time:  # check if they can occur before the considered event
+                        same_order = False
+                        break
 
 
             missing_events = False
-            for (_, fake_model, fake_event) in translated_fake_trip_timeline:
+            for (_, fast_model, fast_event) in fast_trip_timeline:
                 found = False
-                for (_, model, event) in actual_trip_timeline:
-                    if fake_model == model and fake_event == event:
+                for (_, model, event) in slow_trip_timeline:
+                    if fast_model == model and fast_event == event:
                         found = True
                         break
                 if not found:
