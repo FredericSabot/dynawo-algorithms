@@ -32,6 +32,7 @@
 #include "DYNMarginCalculation.h"
 #include "DYNMPIContext.h"
 #include "DYNCriticalTimeCalculation.h"
+#include "DYNMPIContext.h"
 
 testing::Environment* initXmlEnvironment();
 
