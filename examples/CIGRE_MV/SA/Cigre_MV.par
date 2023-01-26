@@ -12,6 +12,7 @@
     <par type="DOUBLE" name="load_betaLong" value="0"/>
     <par type="BOOL" name="load_isControllable" value="false"/>
     <par type="BOOL" name="load_isRestorative" value="false"/>
+    <par type="BOOL" name="BUS-1_hasShortCircuitCapabilities" value="true"/>
     <par type="DOUBLE" name="load_zPMax" value="100"/>
     <par type="DOUBLE" name="load_zQMax" value="100"/>
     <par type="DOUBLE" name="reactance_no_reclosing_delay" value="0"/>

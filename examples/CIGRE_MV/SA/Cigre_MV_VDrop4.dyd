@@ -12,9 +12,6 @@
     of simulation tools for power systems.
 -->
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
-  <!--Connection of the infinitebus to bus 1 through a fake load-->
-  <dyn:blackBoxModel id="InfBus" lib="InfiniteBusWithProgressiveVariations" parFile="Cigre_MV.par" parId="VDrop4" staticId="BUS-1"/>
-  <dyn:blackBoxModel id="LOAD-InfBus" lib="LoadAlphaBeta" parFile="Cigre_MV.par" parId="NullLoadAlphaBeta" staticId="LOAD-InfBus"/>
-  <dyn:connect id1="InfBus" var1="infiniteBus_terminal" id2="LOAD-InfBus" var2="load_terminal"/>
-  <dyn:connect id1="LOAD-InfBus" var1="load_terminal" id2="NETWORK" var2="BUS-1_ACPIN"/>
+  <dyn:blackBoxModel id="InfBus" lib="InfiniteBusWithProgressiveVariations" parFile="Cigre_MV.par" parId="VDrop4"/>
+  <dyn:connect id1="InfBus" var1="infiniteBus_terminal" id2="NETWORK" var2="BUS-1_ACPIN"/>
 </dyn:dynamicModelsArchitecture>

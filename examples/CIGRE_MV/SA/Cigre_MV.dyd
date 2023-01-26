@@ -12,11 +12,6 @@
     simulation tool for power systems.
 -->
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
-  <!--Emulates an infinite bus in the iidm with a generator -> Removes the generator by modeling it as a 0 load-->
-  <dyn:blackBoxModel id="LOAD-Gen" lib="LoadAlphaBeta" parFile="Cigre_MV.par" parId="NullLoadAlphaBeta" staticId="GEN-slack"/>
-  <dyn:connect id1="LOAD-Gen" var1="load_terminal" id2="NETWORK" var2="BUS-1_ACPIN"/>
-
-  <!--<dyn:blackBoxModel id="LOAD-2" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load2" staticId="LOAD-2"/>-->
   <dyn:blackBoxModel id="LOAD-4" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load4" staticId="LOAD-4"/>
   <dyn:blackBoxModel id="LOAD-5" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load5" staticId="LOAD-5"/>
   <dyn:blackBoxModel id="LOAD-6" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load6" staticId="LOAD-6"/>
@@ -26,11 +21,8 @@
   <dyn:blackBoxModel id="LOAD-10" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load10" staticId="LOAD-10"/>
   <dyn:blackBoxModel id="LOAD-11" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load11" staticId="LOAD-11"/>
   <dyn:blackBoxModel id="LOAD-12" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load12" staticId="LOAD-12"/>
-  <!--<dyn:blackBoxModel id="LOAD-13" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load13" staticId="LOAD-13"/>-->
   <dyn:blackBoxModel id="LOAD-14" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load14" staticId="LOAD-14"/>
   <dyn:blackBoxModel id="LOAD-15" lib="LoadAlphaBetaRestorative" parFile="Cigre_MV.par" parId="Load15" staticId="LOAD-15"/>
-
-  <!--<dyn:connect id1="LOAD-2" var1="load_terminal" id2="NETWORK" var2="BUS-2_ACPIN"/>-->
   <dyn:connect id1="LOAD-4" var1="load_terminal" id2="NETWORK" var2="BUS-4_ACPIN"/>
   <dyn:connect id1="LOAD-5" var1="load_terminal" id2="NETWORK" var2="BUS-5_ACPIN"/>
   <dyn:connect id1="LOAD-6" var1="load_terminal" id2="NETWORK" var2="BUS-6_ACPIN"/>
@@ -40,10 +32,8 @@
   <dyn:connect id1="LOAD-10" var1="load_terminal" id2="NETWORK" var2="BUS-10_ACPIN"/>
   <dyn:connect id1="LOAD-11" var1="load_terminal" id2="NETWORK" var2="BUS-11_ACPIN"/>
   <dyn:connect id1="LOAD-12" var1="load_terminal" id2="NETWORK" var2="BUS-12_ACPIN"/>
-  <!--<dyn:connect id1="LOAD-13" var1="load_terminal" id2="NETWORK" var2="BUS-13_ACPIN"/>-->
   <dyn:connect id1="LOAD-14" var1="load_terminal" id2="NETWORK" var2="BUS-14_ACPIN"/>
   <dyn:connect id1="LOAD-15" var1="load_terminal" id2="NETWORK" var2="BUS-15_ACPIN"/>
-  <!--<dyn:connect id1="LOAD-2" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-2_switchOff"/>-->
   <dyn:connect id1="LOAD-4" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-4_switchOff"/>
   <dyn:connect id1="LOAD-5" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-5_switchOff"/>
   <dyn:connect id1="LOAD-6" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-6_switchOff"/>
@@ -53,7 +43,6 @@
   <dyn:connect id1="LOAD-10" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-10_switchOff"/>
   <dyn:connect id1="LOAD-11" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-11_switchOff"/>
   <dyn:connect id1="LOAD-12" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-12_switchOff"/>
-  <!--<dyn:connect id1="LOAD-13" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-13_switchOff"/>-->
   <dyn:connect id1="LOAD-14" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-14_switchOff"/>
   <dyn:connect id1="LOAD-15" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-15_switchOff"/>
 </dyn:dynamicModelsArchitecture>
