@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_8" xmlns:slt="http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_3" id="CIGRE_MV" caseDate="2022-03-08T10:33:54.792+01:00" forecastDistance="0" sourceFormat="IEEE-CDF" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_4" xmlns:slt="http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_1" id="CIGRE_MV" caseDate="2022-02-16T12:49:39.424+01:00" forecastDistance="0" sourceFormat="MATPOWER">
     <iidm:substation id="SUB-13">
         <iidm:voltageLevel id="VL-1" nominalV="110.0" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
                 <iidm:bus id="BUS-1" v="113.3" angle="2.8029468768069608"/>
             </iidm:busBreakerTopology>
-            <iidm:generator id="GEN-slack" energySource="OTHER" minP="-1.0E9" maxP="1.0E9" voltageRegulatorOn="true" targetP="44.937" targetV="113.3" targetQ="0.0" bus="BUS-1" connectableBus="BUS-1" p="-44.937" q="-15.156938021955785">
-                <iidm:minMaxReactiveLimits minQ="-1.7976931348623157E308" maxQ="1.7976931348623157E308"/>
-            </iidm:generator>
+            <iidm:generator id="GEN-slack" energySource="OTHER" minP="-1.0E9" maxP="1.0E9" voltageRegulatorOn="true" targetP="44.937" targetV="113.3" targetQ="0.0" bus="BUS-1" connectableBus="BUS-1" p="-44.937" q="-15.156938021955785"/>
             <iidm:load id="LOAD-slack" loadType="UNDEFINED" p0="0.0" q0="0.0" bus="BUS-1" connectableBus="BUS-1" p="0.0" q="0.0"/>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="VL-2" nominalV="20.0" topologyKind="BUS_BREAKER">

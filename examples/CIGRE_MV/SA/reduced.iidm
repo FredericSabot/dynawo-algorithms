@@ -6,8 +6,7 @@
                 <iidm:bus id="BUS-1" v="113.3"/>
             </iidm:busBreakerTopology>
             <iidm:generator id="GEN-slack" energySource="OTHER" minP="-1.0E9" maxP="1.0E9" voltageRegulatorOn="true" targetP="44.937" targetV="113.3" targetQ="0.0" bus="BUS-1" connectableBus="BUS-1"/>
-            <iidm:load id="LOAD-InfBus" loadType="UNDEFINED" p0="0.0" q0="0.0" bus="BUS-1" connectableBus="BUS-1" p="0.0" q="0.0"/>
-            <iidm:load id="LOAD-slack" loadType="UNDEFINED" p0="0.1" q0="0.0" bus="BUS-1" connectableBus="BUS-1" p="0.0" q="0.0"/>
+            <iidm:load id="LOAD-slack" loadType="UNDEFINED" p0="0.0" q0="0.0" bus="BUS-1" connectableBus="BUS-1" p="0.0" q="0.0"/>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="VL-2" nominalV="20.0" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>

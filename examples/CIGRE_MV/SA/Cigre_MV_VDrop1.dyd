@@ -12,6 +12,6 @@
     of simulation tools for power systems.
 -->
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
-  <dyn:blackBoxModel id="InfBus" lib="InfiniteBusWithProgressiveVariations" parFile="Cigre_MV.par" parId="VDrop1"/>
+  <dyn:blackBoxModel id="InfBus" lib="InfiniteBusWithProgressiveVariations" parFile="Cigre_MV.par" parId="VDrop1" staticId="GEN-slack"/>
   <dyn:connect id1="InfBus" var1="infiniteBus_terminal" id2="NETWORK" var2="BUS-1_ACPIN"/>
 </dyn:dynamicModelsArchitecture>

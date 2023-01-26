@@ -12,10 +12,6 @@
     simulation tool for power systems.
 -->
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
-  <!--Emulates an infinite bus in the iidm with a generator -> Removes the generator by modeling it as a 0 load-->
-  <dyn:blackBoxModel id="LOAD-Gen" lib="LoadAlphaBeta" parFile="Cigre_MV.par" parId="NullLoadAlphaBeta" staticId="GEN-slack"/>
-  <dyn:connect id1="LOAD-Gen" var1="load_terminal" id2="NETWORK" var2="BUS-1_ACPIN"/>
-
   <dyn:blackBoxModel id="LOAD-3" lib="LoadAlphaBetaRestorative" parFile="reduced.par" parId="Load3" staticId="LOAD-3"/>
   <dyn:connect id1="LOAD-3" var1="load_terminal" id2="NETWORK" var2="BUS-3_ACPIN"/>
   <dyn:connect id1="LOAD-3" var1="load_switchOffSignal1" id2="NETWORK" var2="BUS-3_switchOff"/>
