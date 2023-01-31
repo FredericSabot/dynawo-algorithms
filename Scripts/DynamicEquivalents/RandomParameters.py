@@ -31,7 +31,7 @@ def getRandom(value, type_, distribution, params):
         raise Exception('Cannot randomise boolean variables')
     else:
         if distribution == 'gaussian':
-            params = [float(i) for i in params[0:1]] # Only cast the necessary parameters (so that unused parameters can be left blank)
+            params = [float(i) for i in params[0:1]]  # Only cast the necessary parameters (so that unused parameters can be left blank)
             output = random.gauss(value, params[0])
         elif distribution == 'gaussian_percent':
             params = [float(i) for i in params[0:1]]
@@ -57,6 +57,15 @@ def findParameterSet(root, parameterSetId):
         if parameterSet.get('id') == parameterSetId:
             return parameterSet
     raise Exception("'%s' has no parameterSet with id = '%s'" % (root.tag, parameterSetId))
+
+def findParameterSets(root, filter):
+    out = []
+    for parameterSet in list(root):
+        if filter in parameterSet.get('id'):
+            out.append(parameterSet)
+    if len(out) == 0:
+        raise Exception("'%s' has no parameterSet with id containing '%s'" % (root.tag, filter))
+    return out
 
 def findParameter(parameterSet, parameterId):
     for parameter in list(parameterSet):
@@ -226,6 +235,17 @@ def randomiseDynamicParams(fic_MULTIPLE, input_csv):
                     par_set_ids.append(parameter.getparent().get('id'))
                     param_ids.append(paramId)
                     param_values.append(getRandom(parameter.attrib['value'], parameter.attrib['type'], distribution, params))
+            
+            elif paramSetId[-1] == "*":
+                filter = paramSetId[:-1]
+                parameterSets = findParameterSets(pars_root[index], filter)
+                for parameterSet in parameterSets:
+                    parameter = findParameter(parameterSet, paramId)
+                    paramSetId = parameterSet.attrib['id']
+                    par_set_ids.append(paramSetId)
+                    param_ids.append(paramId)
+                    param_values.append(getRandom(parameter.attrib['value'], parameter.attrib['type'], distribution, params))
+
             else:
                 try:
                     index = input_pars.index(parFile)
@@ -437,8 +457,7 @@ def writeStaticParams(static_parameters_dic, output_dir, target_Q=None, slack_lo
                 n.update_generators(new_param_df)
             else:
                 raise Exception("Component type '%s' not considered" % component_types[i])
-        parameters = pp.loadflow.Parameters(read_slack_bus=True, distributed_slack=False, write_slack_bus=False, balance_type=pp.loadflow.BalanceType.PROPORTIONAL_TO_LOAD)
-        lf_results = pp.loadflow.run_ac(n, parameters)
+        lf_results = pp.loadflow.run_ac(n)
 
         if target_Q != None:
             if slack_load_id == None:
@@ -448,12 +467,12 @@ def writeStaticParams(static_parameters_dic, output_dir, target_Q=None, slack_lo
 
             while True:
                 delta_P = -lf_results[0].slack_bus_active_power_mismatch
-                delta_Q = target_Q + n.get_generators().get('q').get(slack_gen_id) # generator convention
-                if (abs(delta_Q) < 1e-6 and abs(delta_P) < 1e-6) or delta_Q != delta_Q: # NaN check -> do not iterate if load flow fails
+                delta_Q = target_Q + n.get_generators().get('q').get(slack_gen_id)
+                if (abs(delta_Q) < 1e-6 and abs(delta_P) < 1e-6) or delta_Q != delta_Q:  # NaN check -> do not iterate if load flow fails
                     break
                 slack = {'p0' : delta_P + n.get_loads().get('p0').get(slack_load_id), 'q0' : delta_Q + n.get_loads().get('q0').get(slack_load_id)}
                 n.update_loads(pd.DataFrame(slack, index = [slack_load_id]))
-                lf_results = pp.loadflow.run_ac(n, parameters)
+                lf_results = pp.loadflow.run_ac(n)
         output_iidm = os.path.join(output_dir, os.path.basename(input_iidm))
         if os.path.exists(output_iidm):
             raise Exception('')
