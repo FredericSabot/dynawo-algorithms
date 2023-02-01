@@ -457,7 +457,9 @@ def writeStaticParams(static_parameters_dic, output_dir, target_Q=None, slack_lo
                 n.update_generators(new_param_df)
             else:
                 raise Exception("Component type '%s' not considered" % component_types[i])
-        lf_results = pp.loadflow.run_ac(n)
+        
+        parameters = pp.loadflow.Parameters(distributed_slack=False)    
+        lf_results = pp.loadflow.run_ac(n, parameters)
 
         if target_Q != None:
             if slack_load_id == None:
@@ -472,7 +474,7 @@ def writeStaticParams(static_parameters_dic, output_dir, target_Q=None, slack_lo
                     break
                 slack = {'p0' : delta_P + n.get_loads().get('p0').get(slack_load_id), 'q0' : delta_Q + n.get_loads().get('q0').get(slack_load_id)}
                 n.update_loads(pd.DataFrame(slack, index = [slack_load_id]))
-                lf_results = pp.loadflow.run_ac(n)
+                lf_results = pp.loadflow.run_ac(n, parameters)
         output_iidm = os.path.join(output_dir, os.path.basename(input_iidm))
         if os.path.exists(output_iidm):
             raise Exception('')
