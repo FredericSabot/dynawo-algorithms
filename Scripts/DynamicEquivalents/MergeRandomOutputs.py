@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 import os
 
-def mergeCurves(fic_MULTIPLEs, output_dir, curve_names, time_precision):
+def mergeCurves(fic_MULTIPLEs, curve_names, time_precision, write_to_csv=False, output_dir=None):
     """
     Merge the output curves of a parametric systematic analysis
 
@@ -89,29 +89,31 @@ def mergeCurves(fic_MULTIPLEs, output_dir, curve_names, time_precision):
             output_curves_one_fic.append(output_curves)
         scenario_ids_all_fic[fic_MULTIPLE] = scenario_ids
         output_curves_all_fic[fic_MULTIPLE] = output_curves_one_fic
+    nb_scenarios_per_fic = len(list(output_curves_all_fic.values())[0])  # Assume that all fic_MULTIPLE have the same number of scenarios
 
+    if write_to_csv:
+        if output_dir is None:
+            raise ValueError("output_dir should be given if write_to_csv is True")
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
 
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+        for curve_index in range(len(curve_names)):
+            output_csv = os.path.join(output_dir, curve_names[curve_index] + '.csv')
+            with open(output_csv, 'w') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=';')
 
-    for curve_index in range(len(curve_names)):
-        output_csv = os.path.join(output_dir, curve_names[curve_index] + '.csv')
-        with open(output_csv, 'w') as csvfile:
-            spamwriter = csv.writer(csvfile, delimiter=';')
-
-            header = ['time']
-            nb_scenarios_per_fic = len(list(output_curves_all_fic.values())[0]) # Assume that all fic_MULTIPLE have the same number of scenarios
-            for scenario_nb in range(nb_scenarios_per_fic):
-                for scenario_ids in scenario_ids_all_fic.values():
-                    header.append(scenario_ids[scenario_nb])
-            spamwriter.writerow(header)
-
-            for t in range(len(output_time_axis)):
-                row = [output_time_axis[t]]
+                header = ['time']
                 for scenario_nb in range(nb_scenarios_per_fic):
-                    for curves_one_fic in output_curves_all_fic.values():
-                        row.append(curves_one_fic[scenario_nb][curve_index][t])
-                spamwriter.writerow(row)
+                    for scenario_ids in scenario_ids_all_fic.values():
+                        header.append(scenario_ids[scenario_nb])
+                spamwriter.writerow(header)
+
+                for t in range(len(output_time_axis)):
+                    row = [output_time_axis[t]]
+                    for scenario_nb in range(nb_scenarios_per_fic):
+                        for curves_one_fic in output_curves_all_fic.values():
+                            row.append(curves_one_fic[scenario_nb][curve_index][t])
+                    spamwriter.writerow(row)
     
     # output_curves_all_fic -> np.narray
     nb_curve_names = len(curve_names)
@@ -144,4 +146,4 @@ if __name__ == "__main__":
         fic_MULTIPLEs.append(os.path.join(args.working_dir, fic_MULTIPLE))
     output_dir = os.path.join(args.working_dir, 'MergedCurves')
 
-    mergeCurves(fic_MULTIPLEs, output_dir, args.curve_names, args.time_precision)
+    mergeCurves(fic_MULTIPLEs, args.curve_names, args.time_precision, write_to_csv=True, output_dir=output_dir)

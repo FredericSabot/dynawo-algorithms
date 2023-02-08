@@ -290,10 +290,15 @@ if __name__ == "__main__":
         cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
                 '--output' , 'aggregatedResults.xml', '--nbThreads', args.nb_threads]
         subprocess.run(cmd)
-        run_fic_MULTIPLE.append(os.path.join(output_dir, 'fic_MULTIPLE.xml'))
+        current_fic = os.path.join(output_dir, 'fic_MULTIPLE.xml')
+        run_fic_MULTIPLE.append(current_fic)
 
-        # Minus because infinite bus has inverse generator convention (minus sign only affects the curves), 100 is from pu to MW
-        curves = -100 * MergeRandomOutputs.mergeCurves(run_fic_MULTIPLE, output_dir_curves, args.curve_names, args.time_precision)
+        if run_id == 0:
+            # Minus because infinite bus has receptor convention (minus sign only affects the curves), 100 is from pu to MW
+            curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], args.curve_names, args.time_precision)
+        else:
+            new_curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], args.curve_names, args.time_precision)
+            curves = np.concatenate((curves, new_curves), axis=2)
         # Order of indices:
             # curves = ndarray(nb_curve_names, nb_scenarios_per_fic, nb_runs, nb_t_steps)
             # mean = ndarray(nb_curve_names, nb_scenarios_per_fic, nb_t_steps)
@@ -309,6 +314,8 @@ if __name__ == "__main__":
     if std_error.max() > sigma_thr:
         print("Warning: maximum number of random runs (%d) reached with sigma (%f) > tol (%f)" % (args.nb_runs_random, std_error.max(), sigma_thr))
 
+    # Merge all curves and write to csv (only done at the end for performance)
+    MergeRandomOutputs.mergeCurves(run_fic_MULTIPLE, output_dir_curves, args.curve_names, args.time_precision, write_to_csv=True)
     disturb = curves.shape[1]
     sqrt_d = int(ceil(sqrt(disturb)))
     rcParams['figure.figsize'] = 12, 7.2
@@ -354,9 +361,7 @@ if __name__ == "__main__":
         subprocess.run(cmd)
 
         output_dir_curves = os.path.join(args.working_dir, 'Optimisation', "MergedCurves_it_%03d" % run_id)
-        curves = -100 * MergeRandomOutputs.mergeCurves([os.path.join(output_dir, 'fic_MULTIPLE.xml')], output_dir_curves, args.curve_names, args.time_precision)
-        curves = np.mean(curves, axis=2) # Only a single run, so replace (nb_curve_names, nb_scenarios_per_fic, nb_runs = 1, nb_t_steps)
-        # by (nb_curve_names, nb_scenarios_per_fic, nb_t_steps)
+        curves = -100 * MergeRandomOutputs.mergeCurves([os.path.join(output_dir, 'fic_MULTIPLE.xml')], args.curve_names, args.time_precision, write_to_csv=output_dir_curves, output_dir=output_dir_curves)
 
         obj = ((curves - mean) / sigma)**2
 
