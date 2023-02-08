@@ -516,6 +516,18 @@ RobustnessAnalysisLauncher::writeOutputs(const SimulationResult& result) const {
     file.close();
   }
 
+  if (!result.getLostEquipementsStreamStr().empty()) {
+    std::string filepath = createAbsolutePath("lostEquipments_" + result.getUniqueScenarioId() + "." + result.getLostEquipmentsFileExtension(),
+                                              lostEquipmentsPath);
+    std::fstream file;
+    file.open(filepath.c_str(), std::fstream::out);
+    if (!file.is_open()) {
+      throw DYNError(DYN::Error::API, KeyError_t::FileGenerationFailed, filepath.c_str());
+    }
+    file << result.getLostEquipementsStreamStr();
+    file.close();
+  }
+
   if (!result.getLogPath().empty()) {
     boost::filesystem::path from(result.getLogPath());
     boost::filesystem::path to(createAbsolutePath("log_" + result.getUniqueScenarioId() + ".log", logPath));
