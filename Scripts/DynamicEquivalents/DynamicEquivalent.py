@@ -1,4 +1,3 @@
-from lxml import etree
 import csv
 import random
 import argparse
@@ -7,11 +6,11 @@ from math import sqrt, ceil
 import subprocess
 from matplotlib import rcParams
 import numpy as np
-from collections import OrderedDict
 import matplotlib.pyplot as plt
 import time
 
 import RandomParameters
+from RandomParameters import DynamicParameter, DynamicParameterList, StaticParameter, StaticParameterList
 import MergeRandomOutputs
 
 def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
@@ -45,124 +44,55 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
                     best = trial_denorm
         yield best_idx, best, fitness[best_idx]
 
-
-class DynamicParametersBounds:
-    def __init__(self, bounds_csv, fic_MULTIPLE):
-        """
-        Creates an orderedDict of structure {parFile: [paramSetId, paramID, bounds]}. It is used to
-        stored the bounds of some dynamic parameters to a format that can easily be sent to dynawo.
-
-        parFile is the file where the parameter is stored
-        paramSetId and paramID locate the parameter in the file
-        bounds are bounds on the possible value that-the parameter can take 
-        """
-        self.d = OrderedDict()
-        input_pars = RandomParameters.ficGetPars(fic_MULTIPLE)
-
-        pars_root = []
-        pars_namespace = []
-        pars_prefix_root = []
-        pars_prefix_root_string = []
-
-        for input_par in input_pars:
-            pars_root.append(etree.parse(input_par).getroot())
-            pars_namespace.append(pars_root[-1].nsmap)
-            pars_prefix_root.append(pars_root[-1].prefix)
-            if pars_prefix_root[-1] is None:
-                pars_prefix_root_string.append('')
-            else:
-                pars_prefix_root_string.append(pars_prefix_root[-1] + ':')
-
+class DynamicParameterListWithBounds:
+    def __init__(self, bounds_csv):
+        self.param_list = DynamicParameterList()
+        self.bounds = []
+ 
         with open(bounds_csv) as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',')
             row = spamreader.__next__()
-            if row != ['parFile', 'ParamSet_id', 'Param_id', 'L_bound', 'U_bound']:
+            if row != ['ParamSet_id', 'Param_id', 'L_bound', 'U_bound']:
                 raise Exception("Incorrect format of %s" % bounds_csv)
 
             for row in spamreader:
-                working_dir = os.path.dirname(fic_MULTIPLE)
-                parFile = os.path.join(working_dir, row[0])
-                paramSetId = row[1]
-                paramId = row[2]
-                bounds = (float(row[3]), float(row[4]))
+                paramSetId = row[0]
+                paramId = row[1]
+                bounds = (float(row[2]), float(row[3]))
 
-                try:
-                    index = input_pars.index(parFile)
-                except ValueError:
-                    raise Exception("Input par %s given in %s is not used in the SA" % (parFile, bounds_csv))
-                parameterSet = RandomParameters.findParameterSet(pars_root[index], paramSetId)
-                parameter = RandomParameters.findParameter(parameterSet, paramId) # Check that the parameters given in bounds_csv do exists
-                # the value of the parameter is not used
+                self.param_list.append(DynamicParameter(paramSetId, paramId, None))
+                self.bounds.append(bounds)
 
-                value = self.d.setdefault(parFile, [[],[],[]])
-                value[0].append(paramSetId)
-                value[1].append(paramId)
-                value[2].append(bounds)
-                
-
-    def toBoundsList(self):
+    def __append__(self, parameter, bounds):
         """
-        Create a list of the bounds contained in self.d (that has the structure {parFile: [paramSetId, paramID, bounds]})
-        by iterating on self.d. The bounds are always returned in the same order as self.d is an orderedDict
+        @param parameter DynamicParameter object to append
+        @param bounds tuple (min_bound, max_bound)
         """
-        out = []
-        for value in self.d.values():
-            for v in value[2]:
-                out.append(v)
-        return out
+        self.param_list.append(parameter)
+        self.bounds.append(bounds)
     
-    def valueListToDict(self, v_lst):
-        """
-        Creates a dictionary that has the same structure as self.d (i.e. {parFile: [paramSetId, paramID, bounds]}),
-        but with the element 'bounds' (a tuple) replaced by the values in v_lst (that are floats)
-
-        Also checks that the values are within the bounds.
-        The order of the values should be the same as the ordre used in self.toBoundsList().
-        """
-
-        if len(v_lst) != len(self.toBoundsList()):
-            raise ValueError("Length of v_lst (%d) should be %d" % (len(v_lst), len(self.toBoundsList())))
+    def valueListToParameterList(self, value_list):
+        if len(value_list) != len(self.bounds):
+            raise ValueError('value_list and self_bounds list should have the same length')
         
-        new_d = dict()
-        v_index = 0
-
-        for parFile, value in self.d.items():
-            for i in range(len(value[0])):
-                new_v = new_d.setdefault(parFile, [[],[],[]])
-                new_v[0].append(value[0][i])
-                new_v[1].append(value[1][i])
-                
-                bounds = value[2][i]
-                if v_lst[v_index] >= bounds[0] and v_lst[v_index] <= bounds[1]:
-                    new_v[2].append(v_lst[v_index])
-                else:
-                    raise ValueError("Value no %d of v_lst (%f) not within (%f, %f)" % (v_index, v_lst[v_index], bounds[0], bounds[1]))
-                v_index += 1
-        return new_d
+        parameter_list = DynamicParameterList()
+        for i in range(len(value_list)):
+            parameter_list.append(self.param_list[i])
+            parameter_list[i].value = value_list[i]
+        return parameter_list
 
 
-class StaticParametersBounds:
-    def __init__(self, bounds_csv, fic_MULTIPLE):
-        """
-        Creates an orderedDict of structure {iidmFile: [Component_type, Component_name, Param_id, bounds]}. It is used to
-        stored the bounds of some static parameters to a format that can easily be sent to dynawo.
+class StaticParameterListWithBounds:
+    def __init__(self, bounds_csv):
+        self.param_list = StaticParameterList()
+        self.bounds = []
 
-        iidmFile is the file where the parameter is stored
-        Component_type, Component_name and Param_id locate the parameter in the file
-        bounds are bounds on the possible value that the parameter can take
-        """
-        self.d = OrderedDict()
         with open(bounds_csv) as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',')
             row = spamreader.__next__()
             if row != ['Component_type', 'Component_name', 'Param_id', 'L_bound', 'U_bound']:
                 print(row)
                 raise Exception("Incorrect format of %s" % bounds_csv)
-            
-            component_types = []
-            component_names = []
-            param_ids = []
-            param_bounds = []
 
             for row in spamreader:
                 componentType = row[0]
@@ -170,57 +100,98 @@ class StaticParametersBounds:
                 paramId = row[2]
                 bounds = (float(row[3]), float(row[4]))
 
-                if componentType not in ['Load', 'Line', 'Bus', 'Generator']:
-                    raise Exception("Component type '%s' not considered" % componentType)
+                self.param_list.append(StaticParameter(componentType, componentName, paramId, None))
+                self.bounds.append(bounds)
 
-                component_types.append(componentType)
-                component_names.append(componentName)
-                param_ids.append(paramId)
-                param_bounds.append(bounds)
-
-        for input_iidm in RandomParameters.ficGetIidms(fic_MULTIPLE): # Assume all iidm's have the same parameters/bounds
-            self.d[input_iidm] = [component_types, component_names, param_ids, param_bounds]
-
-    def toBoundsList(self):
+    def __append__(self, parameter, bounds):
         """
-        Create a list of the bounds contained in self.d (that has the structure {iidmFile: [Component_type, Component_name, Param_id, bounds]})
-        by iterating on self.d. The bounds are always returned in the same order as self.d is an orderedDict
+        @param parameter DynamicParameter object to append
+        @param bounds tuple (min_bound, max_bound)
         """
-        out = []
-        for value in self.d.values():
-            for v in value[3]:
-                out.append(v)
-        return out
-    
-    def valueListToDict(self, v_lst):
-        """
-        Creates a dictionary that has the same structure as self.d (i.e. {iidmFile: [Component_type, Component_name, Param_id, bounds]}),
-        but with the element 'bounds' (a tuple) replaced by the values in v_lst (that are floats)
+        self.param_list.append(parameter)
+        self.bounds.append(bounds)
 
-        Also checks that the values are within the bounds.
-        The order of the values should be the same as the ordre used in self.toBoundsList().
-        """
-
-        if len(v_lst) != len(self.toBoundsList()):
-            raise ValueError("Length of v_lst (%d) should be %d" % (len(v_lst), len(self.toBoundsList())))
+    def valueListToParameterList(self, value_list):
+        if len(value_list) != len(self.bounds):
+            raise ValueError('value_list and self_bounds list should have the same length')
         
-        new_d = dict()
-        v_index = 0
+        parameter_list = StaticParameterList()
+        for i in range(len(value_list)):
+            parameter_list.append(self.param_list[i])
+            parameter_list[-1].value = value_list[i]
+        return parameter_list
 
-        for parFile, value in self.d.items():
-            for i in range(len(value[0])):
-                new_v = new_d.setdefault(parFile, [[],[],[],[]])
-                new_v[0].append(value[0][i])
-                new_v[1].append(value[1][i])
-                new_v[2].append(value[2][i])
-                
-                bounds = value[3][i]
-                if v_lst[v_index] >= bounds[0] and v_lst[v_index] <= bounds[1]:
-                    new_v[3].append(v_lst[v_index])
-                else:
-                    raise ValueError("Value no %d of v_lst (%f) not within (%f, %f)" % (v_index, v_lst[v_index], bounds[0], bounds[1]))
-                v_index += 1
-        return new_d
+
+def runSA(static_parameters, dyn_parameters, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q=None, slack_load_id=None, slack_gen_id=None):
+    RandomParameters.writeParametricSAInputs(working_dir, fic_MULTIPLE, network_name, output_dir_name, static_parameters, dyn_parameters,
+            run_id, target_Q, slack_load_id, slack_gen_id)
+
+    output_dir = os.path.join(working_dir, output_dir_name)
+    cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
+            '--output' , 'aggregatedResults.xml', '--nbThreads', nb_threads]
+    subprocess.run(cmd)
+
+
+def runRandomSA(static_csv, dynamic_csv, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q=None, slack_load_id=None, slack_gen_id=None):
+    full_network_name = os.path.join(working_dir, network_name)
+    static_parameters = RandomParameters.randomiseStaticParams(full_network_name + '.iidm', static_csv)
+    dyn_parameters = RandomParameters.randomiseDynamicParams(full_network_name + '.par', dynamic_csv)
+
+    runSA(static_parameters, dyn_parameters, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q, slack_load_id, slack_gen_id)
+
+
+def runSAFromValueList(value_list, nb_dyn_params, dyn_bounds, static_bounds, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q=None, slack_load_id=None, slack_gen_id=None):
+    dyn_value_list, static_value_list = value_list[:nb_dyn_params], value_list[nb_dyn_params:]
+    dyn_parameters = dyn_bounds.valueListToParameterList(dyn_value_list)
+    static_parameters = static_bounds.valueListToParameterList(static_value_list)
+
+    runSA(static_parameters, dyn_parameters, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q, slack_load_id, slack_gen_id)
+
+
+def objective(fitted_curves, random_curves):
+    mean = np.mean(random_curves, axis=2)  # average over runs
+    sigma = np.std(random_curves, axis=2, ddof=1)
+    for (x,y,z), value in np.ndenumerate(sigma):
+        sigma[x,y,z] = max(value, 1e-3)  # Avoid division by 0 + allow some tolerance
+
+    obj = ((fitted_curves - mean) / sigma)**2
+
+    obj = np.mean(obj, axis=2)  # average over time
+    obj = np.mean(obj, axis=1)  # average over disturbances
+    obj = np.sum(obj)  # sum over curve_names (typically P and Q at point of common coupling)
+
+    return obj
+
+
+def plotCurves(curves, plot_name, fitted_curves = None):  # ndarray(curve_name, scenario, run, t_step)
+    nb_disturb = curves.shape[1]
+    nb_runs = curves.shape[2]
+    nb_time_steps = curves.shape[3]
+    t_axis = np.array([i * time_precision for i in range(nb_time_steps)])
+    sqrt_d = int(ceil(sqrt(nb_disturb)))
+    rcParams['figure.figsize'] = 12, 7.2
+
+    mean = np.mean(curves, axis=2)  # average over runs
+    # sigma = np.std(curves, axis=2, ddof=1)  # ddof = 1 means divide by sqrt(N-1) instead of sqrt(N)
+    percentile_5, percentile_95 = np.percentile(curves, axis=2, q=[5, 95])
+
+    for c in range(curves.shape[0]):
+        fig, axs = plt.subplots(sqrt_d, sqrt_d)
+        for d in range(curves.shape[1]):
+            axs[d//sqrt_d, d%sqrt_d].set_title('Disturbance %d' % d)
+            for r in range(nb_runs):
+                axs[d//sqrt_d, d%sqrt_d].plot(t_axis, curves[c,d,r,:], ':', linewidth=1, alpha=0.3)
+            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, mean[c,d,:], label='Mean', zorder=1000)
+            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, mean[c,d,:] + 3*sigma[c,d,:], label='Mean + 3 sigma', zorder=1000)
+            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, mean[c,d,:] - 3*sigma[c,d,:], label='Mean - 3 sigma', zorder=1000)
+            axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_5[c,d,:], label='5th percentile', zorder=1000)
+            axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_95[c,d,:], label='95th percentile', zorder=1000)
+
+            if fitted_curves is not None:
+                axs[d//sqrt_d, d%sqrt_d].plot(t_axis, fitted_curves[c,d,:], label='Fit')
+            axs[d//sqrt_d, d%sqrt_d].legend()
+        plt.savefig(plot_name + '_%d.png' % c, bbox_inches='tight')
+        plt.close()
 
 
 if __name__ == "__main__":
@@ -235,6 +206,10 @@ if __name__ == "__main__":
                         help='Input file containing the different scenarios to run')
     parser.add_argument('--reduced_fic_MULTIPLE', type=str, required=True,
                         help='Input file containing the different scenarios to run for the reduced model')
+    parser.add_argument('--name', type=str, required=True,
+                        help='Name of the network')
+    parser.add_argument('--reduced_name', type=str, required=True,
+                        help='Name of the reduced network')
     parser.add_argument('--nb_threads', type=str, required=True,
                         help="Number of threads (to use in the SA's)")
     # Random runs
@@ -264,135 +239,111 @@ if __name__ == "__main__":
                         help='Id of the generator that emulates the infinite bus in powsybl')
     args = parser.parse_args()
 
-    args.fic_MULTIPLE = os.path.join(args.working_dir, args.fic_MULTIPLE)
-    args.reduced_fic_MULTIPLE = os.path.join(args.working_dir, args.reduced_fic_MULTIPLE)
-    args.csv_par = os.path.join(args.working_dir, args.csv_par)
-    args.csv_iidm = os.path.join(args.working_dir, args.csv_iidm)
-    args.csv_par_bounds = os.path.join(args.working_dir, args.csv_par_bounds)
-    args.csv_iidm_bounds = os.path.join(args.working_dir, args.csv_iidm_bounds)
+    working_dir = args.working_dir
+    fic_MULTIPLE = os.path.join(working_dir, args.fic_MULTIPLE)
+    reduced_fic_MULTIPLE = os.path.join(working_dir, args.reduced_fic_MULTIPLE)
+    network_name = args.name
+    reduced_network_name = args.reduced_name
+    csv_par = os.path.join(working_dir, args.csv_par)
+    csv_iidm = os.path.join(working_dir, args.csv_iidm)
+    csv_par_bounds = os.path.join(working_dir, args.csv_par_bounds)
+    csv_iidm_bounds = os.path.join(working_dir, args.csv_iidm_bounds)
+    target_Q = float(args.target_Q)
+    nb_runs_random = args.nb_runs_random
+    slack_load_id = args.slack_load_id
+    slack_gen_id = args.slack_gen_id
+    nb_threads = args.nb_threads
+    curve_names = args.curve_names
+    time_precision = args.time_precision
 
-    args.target_Q = float(args.target_Q)
+    MIN_NB_RUNS = 10
 
+    ###
     # Part 1: random runs
+    ###
+
     run_fic_MULTIPLE = []
     sigma_thr = 0.01
-    for run_id in range(args.nb_runs_random):
-        output_dir_name = "RandomisedInputs_%03d" % run_id
-        output_dir = os.path.join(args.working_dir, output_dir_name)
 
-        output_dir_curves = os.path.join(args.working_dir, "MergedCurves")
+    for run_id in range(max(nb_runs_random, MIN_NB_RUNS)):
+        output_dir_name = os.path.join('RandomRuns', 'It_%03d' % run_id)
+        # runRandomSA(csv_iidm, csv_par, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q, slack_load_id, slack_gen_id)
 
-        static_data_dic = RandomParameters.randomiseStaticParams(args.fic_MULTIPLE, args.csv_iidm)
-        dyn_data_dic = RandomParameters.randomiseDynamicParams(args.fic_MULTIPLE, args.csv_par)
-
-        RandomParameters.writeParametricSAInputs(args.working_dir, args.fic_MULTIPLE, output_dir_name, static_data_dic, dyn_data_dic,
-                run_id, args.target_Q, args.slack_load_id, args.slack_gen_id)
-        cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
-                '--output' , 'aggregatedResults.xml', '--nbThreads', args.nb_threads]
-        subprocess.run(cmd)
-        current_fic = os.path.join(output_dir, 'fic_MULTIPLE.xml')
+        current_fic = os.path.join(working_dir, output_dir_name, 'fic_MULTIPLE.xml')
         run_fic_MULTIPLE.append(current_fic)
 
+        new_curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], curve_names, time_precision)  # Minus because infinite bus has receptor convention (minus sign only affects the curves), 100 is from pu to MW
         if run_id == 0:
-            # Minus because infinite bus has receptor convention (minus sign only affects the curves), 100 is from pu to MW
-            curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], args.curve_names, args.time_precision)
+            random_curves = new_curves
         else:
-            new_curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], args.curve_names, args.time_precision)
-            curves = np.concatenate((curves, new_curves), axis=2)
-        # Order of indices:
-            # curves = ndarray(nb_curve_names, nb_scenarios_per_fic, nb_runs, nb_t_steps)
-            # mean = ndarray(nb_curve_names, nb_scenarios_per_fic, nb_t_steps)
-        mean = np.mean(curves, axis=2)
-        sigma = np.std(curves, axis=2, ddof=1) # ddof = 1 means divide by sqrt(N-1) instead of sqrt(N)
+            random_curves = np.concatenate((random_curves, new_curves), axis=2)  # ndarray(curve_name, scenario, run, t_step)
 
-        if run_id >= 10: # Do at least 5 runs
-            std_error = sigma / abs(mean[:,:,[0 for i in range(sigma.shape[2])]]) / sqrt(run_id + 1) # Normalise with respect to value at t = 0 (avoid div by 0)
-            print('Run_id: %d, Std error: %f%%' % (run_id, std_error.max()*100))
-            if std_error.max() < sigma_thr: 
+        if run_id >= MIN_NB_RUNS - 1:
+            mean = np.mean(random_curves, axis=2)  # average over runs
+            sigma = np.std(random_curves, axis=2, ddof=1)  # ddof = 1 means divide by sqrt(N-1) instead of sqrt(N)
+
+            for (x,y,z), value in np.ndenumerate(sigma):
+                sigma[x,y,z] = max(value, 1e-3)  # Avoid division by 0
+
+            std_error = sigma / abs(mean[:,:,[0 for i in range(sigma.shape[2])]]) / sqrt(run_id + 1)  # Normalise with respect to value at t = 0
+            print('Run_id: %d, Std error: %f' % (run_id, std_error.max()*100))
+            if std_error.max() < sigma_thr:
                 print("Threshold reached in %d iterations" % (run_id + 1))
                 break
+
     if std_error.max() > sigma_thr:
-        print("Warning: maximum number of random runs (%d) reached with sigma (%f) > tol (%f)" % (args.nb_runs_random, std_error.max(), sigma_thr))
+        print("Warning: maximum number of random runs ({}) reached with sigma ({}%) > tol ({}%)".format(nb_runs_random, std_error.max()*100, sigma_thr*100))
 
-    # Merge all curves and write to csv (only done at the end for performance)
-    MergeRandomOutputs.mergeCurves(run_fic_MULTIPLE, output_dir_curves, args.curve_names, args.time_precision, write_to_csv=True)
-    disturb = curves.shape[1]
-    sqrt_d = int(ceil(sqrt(disturb)))
-    rcParams['figure.figsize'] = 12, 7.2
-    for c in range(curves.shape[0]):
-        fig, axs = plt.subplots(sqrt_d, sqrt_d)
-        for d in range(curves.shape[1]):
-            axs[d//sqrt_d, d%sqrt_d].set_title('Disturbance %d' % d)
-            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:], label='Mean', zorder=1000)
-            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] + 3*sigma[c,d,:], label='Mean + 3 sigma', zorder=1000)
-            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] - 3*sigma[c,d,:], label='Mean - 3 sigma', zorder=1000)
+    # Merge all curves and write to csv (only done once at the end for performance)
+    output_dir_curves = os.path.join(working_dir, "MergedCurves")
+    MergeRandomOutputs.mergeCurves(run_fic_MULTIPLE, curve_names, time_precision, write_to_csv=True, output_dir=output_dir_curves)
 
-            for i in range(run_id):
-                axs[d//sqrt_d, d%sqrt_d].plot(curves[c,d,i,:], ':', linewidth=1)
-            axs[d//sqrt_d, d%sqrt_d].legend()
-        plt.savefig('Random%d.png' % c, bbox_inches='tight')
-        plt.close()
+    plotCurves(random_curves, 'Random')
+
     randomising_time = time.time()
 
+    ###
     # Part 2: optimisation
-    dyn_bounds_dic = DynamicParametersBounds(args.csv_par_bounds, args.reduced_fic_MULTIPLE)
-    dyn_bounds = dyn_bounds_dic.toBoundsList()
-    nb_dyn_params = len(dyn_bounds)
+    ###
 
-    iidm_bounds_dic = StaticParametersBounds(args.csv_iidm_bounds, args.reduced_fic_MULTIPLE)
-    iidm_bounds = iidm_bounds_dic.toBoundsList()
+    run_id = 0  # Reset run_id
+    np.random.seed(int(42))  # Different seed that the one used for the random runs, although the random generator is a priori different anyway
 
-    bounds = dyn_bounds + iidm_bounds
+    dyn_bounds = DynamicParameterListWithBounds(csv_par_bounds)
+    dyn_bounds_list = dyn_bounds.bounds
+    nb_dyn_params = len(dyn_bounds_list)
 
-    run_id = 0
-    np.random.seed(int(2e9)) # Different seed that the one used for the random runs, although the random generator is a priori different anyway
-    # 2e9 is around half the max 32-bit unsigned int
-    def fobj2(v_lst, verbose=False):
+    static_bounds = StaticParameterListWithBounds(csv_iidm_bounds)
+    static_bounds_list = static_bounds.bounds
+
+    bounds = dyn_bounds_list + static_bounds_list
+
+    def fobj(value_list):
         global run_id
-        dyn_data_dic = dyn_bounds_dic.valueListToDict(v_lst[:nb_dyn_params])
-        static_data_dic = iidm_bounds_dic.valueListToDict(v_lst[nb_dyn_params:])
-
         output_dir_name = os.path.join('Optimisation', "It_%03d" % run_id)
-        output_dir = os.path.join(args.working_dir, output_dir_name)
-        RandomParameters.writeParametricSAInputs(args.working_dir, args.reduced_fic_MULTIPLE, output_dir_name, static_data_dic, dyn_data_dic,
-                run_id, args.target_Q, args.slack_load_id, args.slack_gen_id)
-        cmd = ['./myEnvDynawoAlgorithms.sh', 'SA', '--directory', output_dir, '--input', 'fic_MULTIPLE.xml',
-                '--output' , 'aggregatedResults.xml', '--nbThreads', args.nb_threads]
-        subprocess.run(cmd)
-
-        output_dir_curves = os.path.join(args.working_dir, 'Optimisation', "MergedCurves_it_%03d" % run_id)
-        curves = -100 * MergeRandomOutputs.mergeCurves([os.path.join(output_dir, 'fic_MULTIPLE.xml')], args.curve_names, args.time_precision, write_to_csv=output_dir_curves, output_dir=output_dir_curves)
-
-        obj = ((curves - mean) / sigma)**2
-
-        obj = np.mean(obj, axis=2) # average over time
-        obj = np.mean(obj, axis=1) # average over disturbances
-        if verbose:
-            print('Objective:')
-            print(obj)
-        obj = np.sum(obj) # sum over curve_names (typically P and Q at point of common coupling)
-
-        print("Run id: %d" % run_id)
+        # runSAFromValueList(value_list, nb_dyn_params, dyn_bounds, static_bounds, working_dir, output_dir_name, reduced_fic_MULTIPLE, reduced_network_name, target_Q, slack_load_id, slack_gen_id)
+        current_fic = os.path.join(working_dir, output_dir_name, 'fic_MULTIPLE.xml')
+        curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], curve_names, time_precision)  # Minus because infinite bus has receptor convention (minus sign only affects the curves), 100 is from pu to MW
+        curves = np.mean(curves, axis=2)  # Only a single run, so replace (curve_name, scenario, run, t_step) -> (curve_name, scenario, t_step)
+        obj = objective(curves, random_curves)
+        print('Run id: %d, objective: %f' %(run_id, obj))
         run_id += 1
-
-        return obj, curves
-    
-    def fobj(v_lst):
-        return fobj2(v_lst)[0]
+        return obj
 
     pop_size = 10
-    nb_iterations = 30
-    result = list(de(fobj, bounds, popsize=pop_size, its=nb_iterations))
+    nb_iterations = 20
+    results = list(de(fobj, bounds, popsize=pop_size, its=nb_iterations))
     
-    with open(os.path.join(args.working_dir, 'results.txt'), 'w') as file:
-        for r in result:
+    with open(os.path.join(working_dir, 'results.txt'), 'w') as file:
+        for r in results:
             print(r)
             file.write(', '.join([str(r_) for r_ in r]))
             file.write('\n')
 
-    best_run_id = result[-1][0] + pop_size * nb_iterations
-    print("Best run id: %d" % best_run_id)
-    _, x, f = zip(*result)
+    best_run_id = results[-1][0] + pop_size * nb_iterations
+    obj = results[-1][2]
+    print("Best run id: %d, objective: %f" % (best_run_id, obj))
+    _, x, f = zip(*results)
     plt.plot(f)
     plt.savefig('Convergence.png', bbox_inches='tight')
     plt.close()
@@ -401,16 +352,7 @@ if __name__ == "__main__":
     print('Spent %.1fs on randomising the full model' % (randomising_time-start_time))
     print('Spent %.1fs on optimising the reduced model' % (optimising_time-randomising_time))
 
-    _, curves = fobj2(x[-1], verbose=True)
+    fitted_curves = -100 * MergeRandomOutputs.mergeCurves([os.path.join(working_dir, 'Optimisation', "It_%03d" % best_run_id, 'fic_MULTIPLE.xml')], curve_names, time_precision)
+    fitted_curves = np.mean(fitted_curves, axis=2)  # Only a single run, so replace (curve_name, scenario, run, t_step) -> (curve_name, scenario, t_step)
 
-    for c in range(curves.shape[0]):
-        fig, axs = plt.subplots(sqrt_d, sqrt_d)
-        for d in range(curves.shape[1]):
-            axs[d//sqrt_d, d%sqrt_d].set_title('Disturbance %d' % d)
-            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:], label='Mean')
-            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] + 3*sigma[c,d,:], label='Mean + 3 sigma')
-            axs[d//sqrt_d, d%sqrt_d].plot(mean[c,d,:] - 3*sigma[c,d,:], label='Mean - 3 sigma')
-
-            axs[d//sqrt_d, d%sqrt_d].plot(curves[c,d,:], label='Fit')
-            axs[d//sqrt_d, d%sqrt_d].legend()
-        plt.savefig('Fit%d.png' % c, bbox_inches='tight')
+    plotCurves(random_curves, 'Fit', fitted_curves)
