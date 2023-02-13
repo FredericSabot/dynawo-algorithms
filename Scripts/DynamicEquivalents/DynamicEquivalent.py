@@ -188,7 +188,7 @@ def plotCurves(curves, plot_name, fitted_curves = None):  # ndarray(curve_name, 
             axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_95[c,d,:], label='95th percentile', zorder=1000)
 
             if fitted_curves is not None:
-                axs[d//sqrt_d, d%sqrt_d].plot(t_axis, fitted_curves[c,d,:], label='Fit')
+                axs[d//sqrt_d, d%sqrt_d].plot(t_axis, fitted_curves[c,d,:], 'red', label='Fit')
             axs[d//sqrt_d, d%sqrt_d].legend()
         plt.savefig(plot_name + '_%d.png' % c, bbox_inches='tight')
         plt.close()
@@ -267,7 +267,7 @@ if __name__ == "__main__":
 
     for run_id in range(max(nb_runs_random, MIN_NB_RUNS)):
         output_dir_name = os.path.join('RandomRuns', 'It_%03d' % run_id)
-        # runRandomSA(csv_iidm, csv_par, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q, slack_load_id, slack_gen_id)
+        runRandomSA(csv_iidm, csv_par, working_dir, output_dir_name, fic_MULTIPLE, network_name, target_Q, slack_load_id, slack_gen_id)
 
         current_fic = os.path.join(working_dir, output_dir_name, 'fic_MULTIPLE.xml')
         run_fic_MULTIPLE.append(current_fic)
@@ -298,9 +298,9 @@ if __name__ == "__main__":
     output_dir_curves = os.path.join(working_dir, "MergedCurves")
     MergeRandomOutputs.mergeCurves(run_fic_MULTIPLE, curve_names, time_precision, write_to_csv=True, output_dir=output_dir_curves)
 
-    plotCurves(random_curves, 'Random')
-
     randomising_time = time.time()
+
+    plotCurves(random_curves, 'Random')
 
     ###
     # Part 2: optimisation
@@ -321,7 +321,7 @@ if __name__ == "__main__":
     def fobj(value_list):
         global run_id
         output_dir_name = os.path.join('Optimisation', "It_%03d" % run_id)
-        # runSAFromValueList(value_list, nb_dyn_params, dyn_bounds, static_bounds, working_dir, output_dir_name, reduced_fic_MULTIPLE, reduced_network_name, target_Q, slack_load_id, slack_gen_id)
+        runSAFromValueList(value_list, nb_dyn_params, dyn_bounds, static_bounds, working_dir, output_dir_name, reduced_fic_MULTIPLE, reduced_network_name, target_Q, slack_load_id, slack_gen_id)
         current_fic = os.path.join(working_dir, output_dir_name, 'fic_MULTIPLE.xml')
         curves = -100 * MergeRandomOutputs.mergeCurves([current_fic], curve_names, time_precision)  # Minus because infinite bus has receptor convention (minus sign only affects the curves), 100 is from pu to MW
         curves = np.mean(curves, axis=2)  # Only a single run, so replace (curve_name, scenario, run, t_step) -> (curve_name, scenario, t_step)
