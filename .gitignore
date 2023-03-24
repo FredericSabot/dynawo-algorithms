@@ -18,6 +18,7 @@ documentation/*/*/*.out
 documentation/*/*/*.pdf
 documentation/dynawoAlgorithmsDocumentation
 examples/CIGRE_MV/SA/*/
+examples/CIGRE_MV_Wind/SA/*/
 nrt/data/*/*/outputs*/
 nrt/data/*/*/step-*
 nrt/data/IEEE14/IEEE14*/*.xml
@@ -59,6 +60,8 @@ distributions/
 .gitignore_local
 *.orig
 deploy
+*.png
+*.pdf
 
 sources/config_algorithms.h
 gitversion_algorithms.h*
