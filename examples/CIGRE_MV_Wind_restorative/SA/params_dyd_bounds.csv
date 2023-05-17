@@ -1,0 +1,6 @@
+ParamSet_id,Param_id,L_bound,U_bound
+Load2,load_Alpha,2,2
+Load2,load_Beta,0,3
+Load2,load_UMaxPu,1.05,1.2
+Load2,load_UMinPu,0.1,0.9
+Load2,load_tFilter,0.1,5

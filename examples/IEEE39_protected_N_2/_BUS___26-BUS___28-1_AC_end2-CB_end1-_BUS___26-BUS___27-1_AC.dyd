@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:blackBoxModel id="FAULT__BUS___26-BUS___28-1_AC_end2" lib="NodeFault" parFile="Merged_TD.par" parId="InitFault"/>
+  <dyn:connect id1="FAULT__BUS___26-BUS___28-1_AC_end2" var1="fault_terminal" id2="NETWORK" var2="@_BUS___26-BUS___28-1_AC@@NODE2@_ACPIN"/>
+  <dyn:blackBoxModel id="DISC__BUS___26-BUS___28-1_AC" lib="EventQuadripoleDisconnection" parFile="Merged_TD.par" parId="LineDisc"/>
+  <dyn:connect id1="DISC__BUS___26-BUS___28-1_AC" var1="event_state1_value" id2="NETWORK" var2="_BUS___26-BUS___28-1_AC_state_value"/>
+  <dyn:blackBoxModel id="DISC__BUS___26-BUS___27-1_AC" lib="EventQuadripoleDisconnection" parFile="Merged_TD.par" parId="AdjLineDisc"/>
+  <dyn:connect id1="DISC__BUS___26-BUS___27-1_AC" var1="event_state1_value" id2="NETWORK" var2="_BUS___26-BUS___27-1_AC_state_value"/>
+  <dyn:blackBoxModel id="Replacement fault" lib="NodeFault" parFile="Merged_TD.par" parId="Replacement fault__BUS___26-BUS___28-1_AC"/>
+  <dyn:connect id1="Replacement fault" var1="fault_terminal" id2="NETWORK" var2="@_BUS___26-BUS___28-1_AC@@NODE1@_ACPIN"/>
+</dyn:dynamicModelsArchitecture>

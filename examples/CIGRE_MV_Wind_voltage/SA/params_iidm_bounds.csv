@@ -1,0 +1,10 @@
+Component_type,Component_name,Param_id,L_bound,U_bound
+Load,LOAD-2,p0,5,5.04
+Line,LINE-1-2,r,2,5
+Line,LINE-1-2,x,1,8
+Generator,IBG-2,target_p,1.8,2.2
+Generator,IBG-2,target_q,0.36,0.44
+Generator,IBG-2,max_p,2,2
+Generator,IBG-3,target_p,0.6,1
+Generator,IBG-3,target_q,0.14,0.16
+Generator,IBG-3,max_p,2,2

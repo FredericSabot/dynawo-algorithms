@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023, RTE (http://www.rte-france.com)
+    See AUTHORS.txt
+    All rights reserved.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, you can obtain one at http://mozilla.org/MPL/2.0/.
+    SPDX-License-Identifier: MPL-2.0
+
+    This file is part of Dynawo, an hybrid C++/Modelica open source time domain
+    simulation tool for power systems.
+-->
+<curvesInput xmlns="http://www.rte-france.com/dynawo">
+  <curve model="InfBus" variable="infiniteBus_PPu"/>
+  <curve model="InfBus" variable="infiniteBus_QPu"/>
+  
+  <curve model="NETWORK" variable="LINE-GEN_P2_value"/>
+  <curve model="NETWORK" variable="LINE-GEN_Q2_value"/>
+  <!--<curve model="NETWORK" variable="LINE-GEN_U2_value"/>
+  <curve model="OMEGA_REF" variable="omegaRef_0_value"/>
+  <curve model="IBG-2" variable="ibg_lvrt_f1"/>
+  <curve model="IBG-2" variable="ibg_lvrt_f2"/>
+  <curve model="IBG-2" variable="ibg_lvrt_f3"/>
+  <curve model="IBG-2" variable="ibg_lvrt_f4"/>
+  <curve model="IBG-2" variable="ibg_lvrt_UMinMaxPu"/>
+  <curve model="IBG-2" variable="ibg_lvrt_tThresholdReached"/>
+  <curve model="IBG-2" variable="ibg_lvrt_fLVRT"/>
+  <curve model="IBG-2" variable="ibg_frequencyProtection_fFrequency"/>-->
+</curvesInput>

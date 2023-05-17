@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023, RTE (http://www.rte-france.com)
+    See AUTHORS.txt
+    All rights reserved.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, you can obtain one at http://mozilla.org/MPL/2.0/.
+    SPDX-License-Identifier: MPL-2.0
+
+    This file is part of Dynawo, an hybrid C++/Modelica open source time domain
+    simulation tool for power systems.
+-->
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:blackBoxModel id="PV-3" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-3" staticId="PV-3">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-3" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-3" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-4" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-4" staticId="PV-4">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-4" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-4" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-5" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-5" staticId="PV-5">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-5" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-5" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-6" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-6" staticId="PV-6">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-6" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-6" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-8" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-8" staticId="PV-8">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-8" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-8" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-9" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-9" staticId="PV-9">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-9" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-9" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-10" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-10" staticId="PV-10">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-10" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-10" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="PV-11" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="PV-11" staticId="PV-11">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="PV-11" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="PV-11" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="WT-7" lib="GenericIBG" parFile="CIGRE_MV_Wind.par" parId="WT-7" staticId="WT-7">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="WT-7" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="WT-7" var2="ibg_terminal"/>
+  <dyn:blackBoxModel id="LOAD-slack" lib="LoadAlphaBeta" parFile="CIGRE_MV_Wind.par" parId="LOAD-slack" staticId="LOAD-slack">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LOAD-slack" id2="NETWORK"/>
+  <dyn:blackBoxModel id="LResidential-2" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-2" staticId="LResidential-2">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-2" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-2" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-3" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-3" staticId="LResidential-3">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-3" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-3" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-4" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-4" staticId="LResidential-4">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-4" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-4" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-5" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-5" staticId="LResidential-5">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-5" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-5" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-7" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-7" staticId="LResidential-7">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-7" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-7" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-9" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-9" staticId="LResidential-9">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-9" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-9" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-10" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-10" staticId="LResidential-10">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-10" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-10" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LResidential-13" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LResidential-13" staticId="LResidential-13">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LResidential-13" id2="NETWORK"/>
+  <dyn:connect id1="LResidential-13" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LCommercial-2" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LCommercial-2" staticId="LCommercial-2">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LCommercial-2" id2="NETWORK"/>
+  <dyn:connect id1="LCommercial-2" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LCommercial-6" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LCommercial-6" staticId="LCommercial-6">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LCommercial-6" id2="NETWORK"/>
+  <dyn:connect id1="LCommercial-6" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LCommercial-8" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LCommercial-8" staticId="LCommercial-8">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LCommercial-8" id2="NETWORK"/>
+  <dyn:connect id1="LCommercial-8" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LCommercial-9" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LCommercial-9" staticId="LCommercial-9">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LCommercial-9" id2="NETWORK"/>
+  <dyn:connect id1="LCommercial-9" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LCommercial-12" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LCommercial-12" staticId="LCommercial-12">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LCommercial-12" id2="NETWORK"/>
+  <dyn:connect id1="LCommercial-12" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:blackBoxModel id="LCommercial-13" lib="LoadAlphaBetaMotor" parFile="CIGRE_MV_Wind.par" parId="LCommercial-13" staticId="LCommercial-13">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LCommercial-13" id2="NETWORK"/>
+  <dyn:connect id1="LCommercial-13" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+  <dyn:macroConnector id="LOAD-CONNECTOR">
+    <dyn:connect var1="load_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="load_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroStaticReference id="LOAD">
+    <dyn:staticRef var="load_PPu" staticVar="p"/>
+    <dyn:staticRef var="load_QPu" staticVar="q"/>
+    <dyn:staticRef var="load_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="INVERTER">
+    <dyn:staticRef var="ibg_PPu" staticVar="p"/>
+    <dyn:staticRef var="ibg_QPu" staticVar="q"/>
+  </dyn:macroStaticReference>
+</dyn:dynamicModelsArchitecture>

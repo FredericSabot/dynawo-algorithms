@@ -17,9 +17,7 @@ documentation/*/*/*.nlo
 documentation/*/*/*.out
 documentation/*/*/*.pdf
 documentation/dynawoAlgorithmsDocumentation
-examples/CIGRE_MV/SA/*/
-examples/CIGRE_MV_Wind/SA/*/
-examples/CIGRE_MV_Wind_*/*
+examples/CIGRE_MV_Wind_*/SA/*/
 nrt/data/*/*/outputs*/
 nrt/data/*/*/step-*
 nrt/data/IEEE14/IEEE14*/*.xml

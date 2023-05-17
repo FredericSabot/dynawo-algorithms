@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023, RTE (http://www.rte-france.com)
+    See AUTHORS.txt
+    All rights reserved.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, you can obtain one at http://mozilla.org/MPL/2.0/.
+    SPDX-License-Identifier: MPL-2.0
+
+    This file is part of Dynawo, an hybrid C++/Modelica open source time domain
+    simulation tool for power systems.
+-->
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:blackBoxModel id="LOAD-2" lib="LoadAlphaBetaTwoMotorSimplified" parFile="reduced.par" parId="Load2" staticId="LOAD-2">
+    <dyn:macroStaticRef id="LOAD"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD-CONNECTOR" id1="LOAD-2" id2="NETWORK"/>
+  <dyn:connect id1="LOAD-2" var1="load_omegaRefPu_value" id2="InfBus" var2="infiniteBus_omegaPu"/>
+
+  <dyn:blackBoxModel id="IBG-2" lib="AggregatedIBG" parFile="reduced.par" parId="IBG-2" staticId="IBG-2">
+    <dyn:macroStaticRef id="INVERTER"/>
+  </dyn:blackBoxModel>
+  <dyn:connect id1="InfBus" var1="infiniteBus_omegaPu" id2="IBG-2" var2="ibg_omegaRefPu"/>
+  <dyn:connect id1="NETWORK" var1="@STATIC_ID@@NODE@_ACPIN" id2="IBG-2" var2="ibg_terminal"/>
+
+  <dyn:macroConnector id="LOAD-CONNECTOR">
+    <dyn:connect var1="load_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="load_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroStaticReference id="LOAD">
+    <dyn:staticRef var="load_PPu" staticVar="p"/>
+    <dyn:staticRef var="load_QPu" staticVar="q"/>
+    <dyn:staticRef var="load_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="INVERTER">
+    <dyn:staticRef var="ibg_PPu" staticVar="p"/>
+    <dyn:staticRef var="ibg_QPu" staticVar="q"/>
+  </dyn:macroStaticReference>
+</dyn:dynamicModelsArchitecture>
