@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 import os
 
-def mergeCurves(fic_MULTIPLEs, curve_names, time_precision, write_to_csv=False, output_dir=None):
+def mergeCurvesFromFics(fic_MULTIPLEs, curve_names, time_precision, write_to_csv=False, output_dir=None):
     """
     Merge the output curves of a parametric systematic analysis
 
@@ -128,6 +128,60 @@ def mergeCurves(fic_MULTIPLEs, curve_names, time_precision, write_to_csv=False, 
 
     return curves
 
+def mergeCurvesFromCurves(full_curve_paths, start_time, stop_time, curve_names, time_precision, write_to_csv=False, output_dir=None):
+    """
+    Merge the output curves from a list
+
+    @param full_curve_paths Full paths of the curves to be merged
+    @param output_dir Full path of the directory where the merged curves should be written
+    @param curve_names List of the names of the curves that have to be merged
+    @param time_precision Time precision of the output curves (linear interpolation from the input ones)
+    """
+
+    output_time_axis = [t for t in np.arange(start_time, stop_time, time_precision)]
+    output_time_axis += [stop_time] # np.arange creates a half-open interval
+    output_curves_all = []
+
+    for input_csv in full_curve_paths:
+        with open(input_csv) as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=';')
+            row = spamreader.__next__()
+            input_time_axis = []
+            input_curves = [[] for i in range(len(curve_names))]
+            indexes = []
+            for value in curve_names:
+                indexes.append(row.index(value))
+            for row in spamreader:
+                input_time_axis.append(float(row[0]))
+                for i in range(len(curve_names)):
+                    input_curves[i].append(float(row[indexes[i]]))
+
+            output_curves = [np.interp(output_time_axis, input_time_axis, input_curves[i]) for i in range(len(curve_names))]
+            output_curves_all.append(output_curves)
+
+    if write_to_csv:
+        if output_dir is None:
+            raise ValueError("output_dir should be given if write_to_csv is True")
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
+        for curve_index in range(len(curve_names)):
+            output_csv = os.path.join(output_dir, curve_names[curve_index] + '.csv')
+            with open(output_csv, 'w') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=';')
+
+                header = ['time']
+                for i in range(len(full_curve_paths)):
+                    header.append(i)
+                spamwriter.writerow(header)
+
+                for t in range(len(output_time_axis)):
+                    row = [output_time_axis[t]]
+                    for it in range(len(full_curve_paths)):
+                        row.append(output_curves_all[it][curve_index][t])
+                    spamwriter.writerow(row)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser('Merge the output curves of a parametric systematic analysis')
 
@@ -146,4 +200,4 @@ if __name__ == "__main__":
         fic_MULTIPLEs.append(os.path.join(args.working_dir, fic_MULTIPLE))
     output_dir = os.path.join(args.working_dir, 'MergedCurves')
 
-    mergeCurves(fic_MULTIPLEs, args.curve_names, args.time_precision, write_to_csv=True, output_dir=output_dir)
+    mergeCurvesFromFics(fic_MULTIPLEs, args.curve_names, args.time_precision, write_to_csv=True, output_dir=output_dir)

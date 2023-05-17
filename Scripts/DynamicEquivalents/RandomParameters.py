@@ -96,7 +96,7 @@ class DynamicParameterList:
     def __getitem__(self, item):
         return self.l[item]
     
-    def append(self, new_parameter):
+    def append(self, new_parameter: DynamicParameter):
         """
         Append a static parameter to self, throws in case of duplicate
         """
@@ -209,7 +209,7 @@ class StaticParameterList:
     def __getitem__(self, item):
         return self.l[item]
 
-    def append(self, new_parameter):
+    def append(self, new_parameter: StaticParameter):
         """
         Append a static parameter to self, throws in case of duplicate
         """
@@ -244,6 +244,7 @@ def randomiseStaticParams(input_iidm, input_csv):
             paramId = row[2]
             distribution = row[3]
             distribution_parameters = row[4:8]
+            max_value_ref = row[9]
             
             if componentType == '*':
                 raise NotImplementedError('Wildcard not implemented for Component_type (and is not really useful)')
@@ -268,6 +269,15 @@ def randomiseStaticParams(input_iidm, input_csv):
                         raise Exception("No component '%s' of type '%s' with a parameter '%s' found" % (componentName, componentType, paramId))
                     random_value = getRandom(init_value, "DOUBLE", distribution, distribution_parameters)  # All parameters in .iidm are of type double
 
+                    if max_value_ref != '':
+                        max = components.at[index, max_value_ref]
+                        nb_it = 0
+                        while random_value > max:
+                            random_value = getRandom(init_value, "DOUBLE", distribution, distribution_parameters)
+                            nb_it += 1
+                            if nb_it > 1000:
+                                raise Exception()
+
                     random_static_parameters.append(StaticParameter(componentType, index, paramId, random_value))
             else:
                 init_value = components.get(paramId).get(componentName)
@@ -275,12 +285,21 @@ def randomiseStaticParams(input_iidm, input_csv):
                     raise Exception("No component '%s' of type '%s' with a parameter '%s' found" % (componentName, componentType, paramId))
                 random_value = getRandom(init_value, "DOUBLE", distribution, distribution_parameters)  # All parameters in .iidm are of type double
 
+                if max_value_ref != '':
+                    max = components.at[index, max_value_ref]
+                    nb_it = 0
+                    while random_value > max:
+                        random_value = getRandom(init_value, "DOUBLE", distribution, distribution_parameters)
+                        nb_it += 1
+                        if nb_it > 1000:
+                            raise Exception()
+
                 random_static_parameters.append(StaticParameter(componentType, componentName, paramId, random_value))
 
     return random_static_parameters
 
 
-def writeStaticParams(static_parameters, input_iidm, output_dir, slack_load_id, target_Q=None, slack_gen_id=None):
+def writeStaticParams(static_parameters, input_iidm, output_dir, slack_load_id, target_Q=None, slack_gen_id=None, slack_gen_type=None):
     """
     Set new values of parameters in the input iidm, restore the load/generation balance (and target_Q if given), and write the resulting iidm to output_dir.
 
@@ -331,7 +350,7 @@ def writeStaticParams(static_parameters, input_iidm, output_dir, slack_load_id, 
     lf_results = pp.loadflow.run_ac(n, lf_parameters)
 
     if target_Q != None:
-        if slack_gen_id == None:
+        if slack_gen_id == None or slack_gen_type == None:
             raise
 
     while True:
@@ -340,7 +359,12 @@ def writeStaticParams(static_parameters, input_iidm, output_dir, slack_load_id, 
             print('Warning: load flow did not converge')
             break
         if target_Q != None:
-            delta_Q = target_Q + n.get_generators().get('q').get(slack_gen_id)
+            if slack_gen_type == 'Line':
+                delta_Q = target_Q + n.get_lines().get('q2').get(slack_gen_id)
+            elif slack_gen_type == 'Generator':
+                delta_Q = target_Q + n.get_generators().get('q').get(slack_gen_id)
+            else:
+                raise NotImplementedError()
             if (abs(delta_Q) < 1e-6 and abs(delta_P) < 1e-6):
                 break
             slack = {'p0' : delta_P + n.get_loads().get('p0').get(slack_load_id), 'q0' : delta_Q + n.get_loads().get('q0').get(slack_load_id)}
@@ -380,7 +404,7 @@ def fileIsInList(file, lst):
     return False
 
 
-def writeParametricSAInputs(working_dir, fic_MULTIPLE, network_name, output_dir_name, static_parameters, dyn_data_dic, run_id, target_Q=None, slack_load_id=None, slack_gen_id=None):
+def writeParametricSAInputs(working_dir, fic_MULTIPLE, network_name, output_dir_name, static_parameters, dyn_data_dic, run_id, target_Q=None, slack_load_id=None, slack_gen_id=None, slack_gen_type=None, disturbance_ids=None):
     """
     Write the inputs files necessary to perform a "parametric" systematic analysis (SA), i.e. a systematic analysis where the parameters are modified
 
@@ -419,8 +443,13 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, network_name, output_dir_
     # Write new fic_MULTIPLE.xml
     fic_root = etree.parse(fic_MULTIPLE).getroot()
     scenarios = fic_root[0]
-    for scenario in scenarios:
+    disturb_id = 0
+    for scenario in list(scenarios):
         scenario.set('id', scenario.get('id') + "_%03d" % run_id)  # Adds run_id to scenario id to more easily merge the ouput files later on
+        if disturbance_ids is not None:
+            if disturb_id not in disturbance_ids:
+                scenario.getparent().remove(scenario)
+        disturb_id += 1
     with open(os.path.join(output_dir, 'fic_MULTIPLE.xml'), 'xb') as doc:
         doc.write(etree.tostring(fic_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
@@ -435,7 +464,7 @@ def writeParametricSAInputs(working_dir, fic_MULTIPLE, network_name, output_dir_
         shutil.copy(os.path.join(working_dir, dyd_file), output_dir)
 
     # Write new .iidm's
-    writeStaticParams(static_parameters, full_network_name + '.iidm', output_dir, slack_load_id, target_Q, slack_gen_id)        
+    writeStaticParams(static_parameters, full_network_name + '.iidm', output_dir, slack_load_id, target_Q, slack_gen_id, slack_gen_type)      
 
     # Write new .par's
     writeDynamicParams(dyn_data_dic, full_network_name + '.par', output_dir)
