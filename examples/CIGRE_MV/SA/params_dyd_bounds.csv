@@ -1,7 +1,0 @@
-parFile,ParamSet_id,Param_id,L_bound,U_bound
-reduced.par,Load3,load_Beta,2,3
-reduced.par,Load3,load_UMinPu,0.3,0.7
-reduced.par,Load3,load_tFilter,0.3,5
-reduced.par,Load4,load_Beta,2,3
-reduced.par,Load4,load_UMinPu,0.3,0.7
-reduced.par,Load4,load_tFilter,0.3,5
