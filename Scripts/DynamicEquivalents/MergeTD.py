@@ -24,17 +24,13 @@ def addPrefixToXMLElementAttributes(element, prefix : str, keys : list):
         if value != 'NETWORK' and value != 'OMEGA_REF':  # Iidms are merged -> NETWORK contains all D networks
             element.set(key, prefix + element.get(key))
 
-def mergeDyds(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_it=None, with_ufls=False):
+def mergeDyds(full_T_name, full_D_name, full_TD_name, nb_it=None, with_ufls=False):
     XMLparser = etree.XMLParser(remove_blank_text=True)
     T_root = etree.parse(full_T_name + '.dyd', XMLparser).getroot()
-
-    nb_loads = 0
 
     T = pp.network.load(full_T_name + '.iidm')
     T_loads = T.get_loads()
     for load in T_loads.index:
-        # if load == 'LOAD___39_EC':  # not in ['LOAD____3_EC', 'LOAD____4_EC', 'LOAD____7_EC', 'LOAD____8_EC', 'LOAD___12_EC', 'LOAD___15_EC', 'LOAD___16_EC', 'LOAD___18_EC', 'LOAD___21_EC', 'LOAD___24_EC']:
-            # continue
         if T_loads.at[load, 'p0'] < 0.01 or load == 'LOAD___39_EC':
             continue
 
@@ -91,9 +87,6 @@ def mergeDyds(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_it
             elif tag == 'connect' or tag == 'macroConnect':
                 if element.get('id1') == load or element.get('id2') == load:
                     T_root.remove(element)
-        nb_loads += 1
-        if nb_max_loads is not None and nb_loads >= nb_max_loads:
-            break
 
     for element in T_root:
         tag = getCleanXMLTag(element.tag)
@@ -112,17 +105,13 @@ def mergeDyds(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_it
     with open(full_TD_name + '.dyd', 'wb') as doc:
         doc.write(etree.tostring(T_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
-def mergePars(full_T_name, full_D_name, full_TD_name, nb_max_loads = None):
+def mergePars(full_T_name, full_D_name, full_TD_name):
     XMLparser = etree.XMLParser(remove_blank_text=True)
     T_root = etree.parse(full_T_name + '.par', XMLparser).getroot()
-
-    nb_loads = 0
 
     T = pp.network.load(full_T_name + '.iidm')
     T_loads = T.get_loads()
     for load in T_loads.index:
-        # if load == 'LOAD___39_EC':  # not in ['LOAD____3_EC', 'LOAD____4_EC', 'LOAD____7_EC', 'LOAD____8_EC', 'LOAD___12_EC', 'LOAD___15_EC', 'LOAD___16_EC', 'LOAD___18_EC', 'LOAD___21_EC', 'LOAD___24_EC']:
-            # continue
         if T_loads.at[load, 'p0'] < 0.01 or load == 'LOAD___39_EC':
             continue
         D_root = etree.parse(full_D_name + '.par', XMLparser).getroot()
@@ -132,15 +121,11 @@ def mergePars(full_T_name, full_D_name, full_TD_name, nb_max_loads = None):
         for element in D_root:
             element.set('id', load + '_' + element.get('id'))
             T_root.append(element)
-        nb_loads += 1
-        if nb_max_loads is not None and nb_loads >= nb_max_loads:
-            break
 
     with open(full_TD_name + '.par', 'wb') as doc:
         doc.write(etree.tostring(T_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
-def mergeIidms(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_it = None):
-    # Merge iidm
+def mergeIidms(full_T_name, full_D_name, full_TD_name, nb_it = None):
     T = pp.network.load(full_T_name + '.iidm')
     D = pp.network.load(full_D_name + '.iidm')
 
@@ -150,7 +135,6 @@ def mergeIidms(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_i
         D.create_generators(id='GEN-slack', max_p=1e9, min_p=-1e9, voltage_regulator_on=True, target_p=0.9853699928339129, target_v=113.3, voltage_level_id='VL-0', 
                             bus_id='B-0', connectable_bus_id='B-0')
 
-    nb_loads = 0
     P_load = 0
 
     T_loads = T.get_loads()
@@ -171,7 +155,7 @@ def mergeIidms(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_i
             # P_D = 2.5756359475314063
             # Q_D = 0.9681799419061042
             
-            P_D = 5.0219189866505980
+            P_D = 5.0219189866505980  # Gross load of the system -> will cause a decrease of total net load in the transmission system that has to be compensated beforehand
             # Q_D = 1.5474945827433073
 
         else:
@@ -298,10 +282,6 @@ def mergeIidms(full_T_name, full_D_name, full_TD_name, nb_max_loads = None, nb_i
 
         T.create_lines(id='LD-{}'.format(load), voltage_level1_id=vl1, bus1_id=bus1, voltage_level2_id=vl2, bus2_id=bus2, r=0, x=0.001)
 
-        nb_loads += 1
-        if nb_max_loads is not None and nb_loads >= nb_max_loads:
-            break
-
 
     lf_parameters = pp.loadflow.Parameters(distributed_slack=False)
     print(pp.loadflow.run_ac(T, lf_parameters))
@@ -339,7 +319,7 @@ if __name__ == "__main__":
     parser.add_argument('--TD_name', type=str, required=True,
                         help='Name of the merged network')
     parser.add_argument('--nb_it', type=str, required=False,
-                        help='Number of random copies of the distribution network to consider') # TODO: Enlever gen et fin du dyd, ajouter slack
+                        help='Number of random copies of the distribution network to consider')
     parser.add_argument('--with_ufls', type=str, required=True,
                         help='True if there is an UFLS relay connected to the loads')
 
@@ -363,8 +343,6 @@ if __name__ == "__main__":
     else:
         raise
 
-    nb_max_loads = 999
-
     full_T_name = os.path.join(working_dir, T_dir, T_name)
 
     if nb_it is None:
@@ -372,9 +350,9 @@ if __name__ == "__main__":
         full_TD_name = os.path.join(working_dir, TD_dir, TD_name)
         os.makedirs(os.path.dirname(full_TD_name), exist_ok=True)
 
-        mergeIidms(full_T_name, full_D_name, full_TD_name, nb_max_loads)
-        mergeDyds(full_T_name, full_D_name, full_TD_name, nb_max_loads, with_ufls=with_ufls)
-        mergePars(full_T_name, full_D_name, full_TD_name, nb_max_loads)
+        mergeIidms(full_T_name, full_D_name, full_TD_name)
+        mergeDyds(full_T_name, full_D_name, full_TD_name, with_ufls=with_ufls)
+        mergePars(full_T_name, full_D_name, full_TD_name)
 
         shutil.copy(full_T_name + '.jobs', full_TD_name + '.jobs')
         if os.path.isfile(full_T_name + '.crv'):
@@ -400,9 +378,9 @@ if __name__ == "__main__":
             full_TD_name = os.path.join(working_dir, TD_dir + '_Random', 'It_%03d' % i, TD_name)
             os.makedirs(os.path.dirname(full_TD_name), exist_ok=True)
 
-            mergeIidms(full_T_name, full_D_name, full_TD_name, nb_max_loads, nb_it)
-            mergeDyds(full_T_name, full_D_name, full_TD_name, nb_max_loads, nb_it, with_ufls)
-            mergePars(full_T_name, full_D_name, full_TD_name, nb_max_loads)
+            mergeIidms(full_T_name, full_D_name, full_TD_name, nb_it)
+            mergeDyds(full_T_name, full_D_name, full_TD_name, nb_it, with_ufls)
+            mergePars(full_T_name, full_D_name, full_TD_name)
 
             shutil.copy(full_T_name + '.jobs', full_TD_name + '.jobs')
             if os.path.isfile(full_T_name + '.crv'):

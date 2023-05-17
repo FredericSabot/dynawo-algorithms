@@ -8,14 +8,11 @@ from matplotlib import rcParams
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import heapq
-import copy
 from dataclasses import dataclass
 
 import RandomParameters
 from RandomParameters import DynamicParameter, DynamicParameterList, StaticParameter, StaticParameterList
 import MergeRandomOutputs
-import Clustering
 
 def normaliseParameters(parameters, bounds):
     min_b, max_b = np.asarray(bounds).T
@@ -47,10 +44,6 @@ def de(fobj, bounds, mut=0.8, crossp=0.95, popsize=20, its=1000, init=None):
     if init is not None:
         pop_denorm[0] = init
         pop_denorm[-1] = init
-
-    """ for i in range(pop_denorm.shape[0]):
-        pop_denorm[i] = refineBounds_(pop_denorm[i]) """
-
     objs = [fobj(ind) for ind in pop_denorm]
     fitness = np.asarray([obj.total_obj for obj in objs])
     best_idx = np.argmin(fitness)
@@ -68,7 +61,6 @@ def de(fobj, bounds, mut=0.8, crossp=0.95, popsize=20, its=1000, init=None):
                 cross_points[np.random.randint(0, dimensions)] = True
             trial = np.where(cross_points, mutant, pop[j])
             trial_denorm = denormaliseParameters(trial, bounds)
-            # trial_denorm = refineBounds_(trial_denorm)
             obj = fobj(trial_denorm)
             f = obj.total_obj
             converged = obj.converged
@@ -102,28 +94,6 @@ class DEResults:
 
     def __repr__(self) -> str:
         return str(self.best_index) + ',' + str(self.best_iteration) + ',' + str(self.best_parameters) + ',' + str(self.best_obj) + ',' + str(self.converged)
-
-""" def refineBounds(trial_denorm, dyn_bounds, static_bounds):
-    nb_dyn_params = len(dyn_bounds.bounds)
-
-    dyn_index = 0
-    for dyn_param in dyn_bounds.param_list:
-        if dyn_param.id == 'ibg_SNom':
-            found = False
-            static_index = 0
-            for static_param in static_bounds.param_list:
-                if static_param.component_type == 'Generator' and static_param.component_name == dyn_param.set_id:
-                    found = True
-                    # Dyn param SNom is at least at large as static parameter target_p
-                    sNom = trial_denorm[dyn_index]
-                    target_P = trial_denorm[nb_dyn_params + static_index]
-                    trial_denorm[dyn_index] = max(sNom, target_P)
-            if not found:
-                raise Exception()
-            static_index += 1
-        dyn_index += 1
-
-    return trial_denorm """
 
 def refineStaticParameters(static_bounds):
     pass
@@ -238,7 +208,7 @@ def runSAFromValueList(value_list, nb_dyn_params, dyn_bounds, static_bounds, wor
     runSA(static_parameters, dyn_parameters, working_dir, output_dir_name, fic_MULTIPLE, network_name, run_id, target_Q, slack_load_id, slack_gen_id, slack_gen_type, disturbance_ids)
 
 
-def objective(fitted_curves, random_curves, centroid, value_list, bounds, lasso_factor, parameter_names, convergence_criteria = 1, tripping_only = False):
+def objective(fitted_curves, random_curves, value_list, bounds, lasso_factor, parameter_names, convergence_criteria = 1, tripping_only = False):
     median = np.median(random_curves, axis=2)  # average over runs
     sigma = np.std(random_curves, axis=2, ddof=1)
     sigma_fixed = sigma.copy()
@@ -249,42 +219,21 @@ def objective(fitted_curves, random_curves, centroid, value_list, bounds, lasso_
         sigma[x,y,z] = max(max(value, 1e-2), 1e-2 * abs(median[x,y,z]))  # Avoid division by 0 + allow some tolerance
         sigma[x,y,z] = min(sigma[x,y,z], abs(0.1 * max(median[x,y,0], median[x,y,z])))  # Limit tolerance when very high dispersion # Issue if median close to 0 at some point
 
-    """ representative_index = 0
-    representative_dist = 999999
-    nb_runs = random_curves.shape[2]
-    for i in range(nb_runs):
-        dist = np.sum(np.mean(np.mean(((random_curves[:,:,i,:] - median) / sigma_fixed)**2, axis=2), axis=1))
-        if dist < representative_dist:
-            representative_dist = dist
-            representative_index = i """
-
     obj = ((fitted_curves - percentile_95) / sigma)
     for (x,y,z), value in np.ndenumerate(obj):
         if value > 0:
             obj[x, y, z] = value / 2
     obj = obj**2
     obj = np.clip(obj, 0, 100)  # Allow for large errors if they only occur during a very short period.
-                               # Could also use dynamic time warping or another similar metric
+                                # Could also use dynamic time warping or another similar metric
 
-    """ obj_low = lower_bound - fitted_curves
-    obj_high = fitted_curves - upper_bound
-    for (x,y,z), _ in np.ndenumerate(obj_low):
-        obj_low[x,y,z] = max(obj_low[x,y,z], 0)
-        obj_high[x,y,z] = max(obj_high[x,y,z], 0)
-    obj = (obj_low + obj_high)
-    for (x,y,z), value in np.ndenumerate(obj):
-        obj[x,y,z] = value / max(abs(median[x, y, 0]), 1) * 100  # Scale compared to initial value """
-
-    obj_name_disturb = np.mean(obj, axis=2) # 0.5 * np.percentile(obj, axis=2, q=95) + 0.5 * np.mean(obj, axis=2)  # average over time
+    obj_name_disturb = np.mean(obj, axis=2)  # 0.5 * np.percentile(obj, axis=2, q=95) + 0.5 * np.mean(obj, axis=2)  # average over time
 
     if tripping_only:  # Only consider active power steady-state error
         for (x,y), value in np.ndenumerate(obj_name_disturb):
             obj_name_disturb[x,y] = 0 + abs(percentile_95[x,y,-1] - fitted_curves[x,y,-1]) / sigma[x,y,-1]  # Only look at steady-state deviation error
             if x == 1:
                 obj_name_disturb[x,y] = 0  # Neglect reactive power
-    # else:
-    #     for (x,y), value in np.ndenumerate(obj_name_disturb):
-    #         obj_name_disturb[x,y] = value
 
     if np.max(obj_name_disturb) <= convergence_criteria:
         converged = True
@@ -306,7 +255,7 @@ def objective(fitted_curves, random_curves, centroid, value_list, bounds, lasso_
 
     return Objective(total_obj, obj_name_disturb, parameter_dist, converged)
 
-def plotCurves(curves, centroids, plot_name, fitted_curves = None, time_precision=1e-2):  # ndarray(curve_name, scenario, run, t_step)
+def plotCurves(curves, plot_name, fitted_curves = None, time_precision=1e-2):  # ndarray(curve_name, scenario, run, t_step)
     nb_disturb = curves.shape[1]
     nb_runs = curves.shape[2]
     nb_time_steps = curves.shape[3]
@@ -352,28 +301,13 @@ def plotCurves(curves, centroids, plot_name, fitted_curves = None, time_precisio
             axs2.set_ylim([0, 10])
             for r in range(nb_runs):
                 axs[d//sqrt_d, d%sqrt_d].plot(t_axis, curves[c,d,r,:], ':', linewidth=1, alpha=0.3)
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, median[c,d,:] + 3*sigma[c,d,:], label='Median + 3 sigma', zorder=1000)
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, median[c,d,:] - 3*sigma[c,d,:], label='Median - 3 sigma', zorder=1000)
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_5[c,d,:], label='5th percentile', zorder=1000)
-
             axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_5[c,d,:], label='5th percentile', zorder=1000, alpha=0.7)
             axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_95[c,d,:], label='95th percentile', zorder=1000, alpha=0.7)
             # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, median[c,d,:], 'green', label='Median', zorder=1000, alpha=0.7)
 
             if obj is not None:
                 axs2.plot(t_axis, obj[c,d,:], label='Error', zorder=1000, alpha=0.3)
-            
             # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, curves[c,d,representative_index,:], label='Representative', zorder=2000)
-
-            """ for i in range(centroids.shape[2]):
-                worst_tripping = np.argmax(centroids[0,3,:,-1])
-                if fitted_curves is None or i == worst_tripping:
-                    axs[d//sqrt_d, d%sqrt_d].plot(t_axis, centroids[c,d,i,:], label='Cluster %d' % i, zorder=1000) """
-
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, lower_bound[c,d,:], label='Lower bound', zorder=1000)
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, upper_bound[c,d,:], label='Upper bound', zorder=1000)
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_95[c,d,:] + sigma[c,d,:], label='95th percentile + sigma', zorder=1000)
-            # axs[d//sqrt_d, d%sqrt_d].plot(t_axis, percentile_95[c,d,:] - sigma[c,d,:], label='95th percentile - sigma', zorder=1000)
 
             if fitted_curves is not None:
                 axs[d//sqrt_d, d%sqrt_d].plot(t_axis, fitted_curves[c,d,:], 'red', label='Fit', zorder=3000)
@@ -483,21 +417,9 @@ if __name__ == "__main__":
     MIN_NB_RUNS = 10
 
     rerun_random = False
-    rerun_protection = False
-    rerun_average = False
-    rerun_lasso = False
-    rerun_de_no_trip = False
     rerun_de = False
 
     if rerun_random:  # If intermediary results changes, need to rerun following steps
-        rerun_protection = True
-    if rerun_protection:
-        rerun_average = True
-    if rerun_average:
-        rerun_lasso = True
-    if rerun_lasso:
-        rerun_de_no_trip = True
-    if rerun_de_no_trip:
         rerun_de = True
 
     ###
@@ -546,14 +468,7 @@ if __name__ == "__main__":
 
     randomising_time = time.time()
 
-    """ centroids = Clustering.getCentroids(random_curves)
-    worst_tripping = np.argmax(centroids[0,3,:,-1])
-    print(worst_tripping)
-    centroid = centroids[:,:,worst_tripping,:]  # Worst centroid probably """
-    centroids = None
-    centroid = None # Not used atm anyway
-
-    plotCurves(random_curves, centroids, 'Random')
+    plotCurves(random_curves, 'Random')
     print('Spent %.1fs on randomising the full model' % (randomising_time-start_time))
 
     ###
@@ -570,7 +485,6 @@ if __name__ == "__main__":
     static_bounds_list = static_bounds.bounds
 
     bounds = dyn_bounds_list + static_bounds_list
-    # refineBounds_ = lambda trial_denorm : refineBounds(trial_denorm, dyn_bounds, static_bounds)
     parameter_names = getParameterNames(dyn_bounds, static_bounds)
 
     def fobj2(value_list, lasso_factor, output_dir, disturbance_ids = None, convergence_criteria = 1.0, rerun = True, tripping_only = False):
@@ -585,7 +499,7 @@ if __name__ == "__main__":
             random_curves_considered = random_curves[:,disturbance_ids,:]
         else:
             random_curves_considered = random_curves
-        obj = objective(curves, random_curves_considered, centroid, value_list, bounds, lasso_factor, parameter_names, convergence_criteria, tripping_only)
+        obj = objective(curves, random_curves_considered, value_list, bounds, lasso_factor, parameter_names, convergence_criteria, tripping_only)
         print('Run id: %d, objective: %f' %(run_id, obj.total_obj))
         run_id += 1
         return obj
@@ -593,187 +507,6 @@ if __name__ == "__main__":
     # DE parameters
     pop_size = 20
     nb_max_iterations_DE = 20
-
-    """ min_b, max_b = np.asarray(bounds).T
-    mean_params = (min_b + max_b) / 2
-    run_id = 0
-    fobj2(mean_params, 0, 'Average', rerun=True)
-    raise """
-
-    """ # Fit protection-related parameters first
-    print('\nTripping fit')
-    protection_only_bounds = copy.deepcopy(bounds)
-    alpha = 1
-    for i in range(len(bounds)):
-        ref = (bounds[i][0] + bounds[i][1]) / 2
-        if isTrippingParameter(parameter_names[i]):
-            pass
-        else:
-            protection_only_bounds[i][0] = ref
-            protection_only_bounds[i][1] = ref
-    
-    def fobj(value_list):
-        return fobj2(value_list, 0, 'Tripping_fit', rerun=rerun_protection, tripping_only=True)
-    results = list(de(fobj, bounds, popsize=pop_size, its=nb_max_iterations_DE))
-    best_parameters = results[-1].best_parameters
-    converged = results[-1].converged
-    print('Tripping_fit: objective: %f, converged: %d' % (results[-1].best_obj.total_obj, converged))
-    printParameters(results[-1], dyn_bounds, static_bounds)
-    best_run_id = results[-1].best_index + pop_size * (results[-1].best_iteration + 1)
-    fitted_curves = -100 * MergeRandomOutputs.mergeCurvesFromFics([os.path.join(working_dir, 'Tripping_fit', 'It_%03d' % best_run_id, 'fic_MULTIPLE.xml')], curve_names, time_precision)
-    plotCurves(random_curves, centroids, 'Tripping_fit', fitted_curves[:,:,0,:])
-
-    tripping_params_norm = normaliseParameters(best_parameters, bounds)
-    parameter_names = getParameterNames(dyn_bounds, static_bounds)
-    for i in range(len(tripping_params_norm)):
-        if (tripping_params_norm[i] == 0 or tripping_params_norm[i] == 1) and isTrippingParameter(parameter_names[i]):
-            print('Warning:', parameter_names[i], 'has reached a bound in tripping fit')
-    if not converged:
-        raise Exception('Could not fit tripping parameters')
-
-    for i in range(len(bounds)):
-        if isTrippingParameter(parameter_names[i]):
-            ref = (bounds[i][0] + bounds[i][1]) / 2
-            bounds[i][0] = max(best_parameters[i] - 0.05 * ref, bounds[i][0])
-            bounds[i][1] = min(best_parameters[i] + 0.05 * ref, bounds[i][1]) """
-
-    """ # Select disturbances to apply LASSO to
-    min_b, max_b = np.asarray(bounds).T
-    mean_params = (min_b + max_b) / 2
-    run_id = 0
-    obj_per_name_disturb = fobj2(mean_params, 0, 'Average', rerun=rerun_average).obj_name_disturb
-    obj_per_disturbance = np.sum(obj_per_name_disturb, axis=0)
-
-    worst_disturbances = heapq.nlargest(2, range(len(obj_per_disturbance)), key=obj_per_disturbance.__getitem__)
-    print('Worst disturbances:', worst_disturbances)
-
-    # worst_disturbances = [0, 1, 3]  # Manual override to test
-    # worst_disturbances = None """
-
-    """ # LASSO
-    lasso_factor = 0.5
-    best_parameters = None
-    converged = False
-    parameter_distances = []
-    lasso_objectives = []
-    while True:
-        print('LASSO: l =', lasso_factor)
-        def fobj(value_list):
-            return fobj2(value_list, lasso_factor, 'LASSO_' + str(lasso_factor), rerun=rerun_lasso)
-        results = list(de(fobj, bounds, popsize=pop_size, its=nb_max_iterations_DE, init=best_parameters))
-        best_parameters = results[-1].best_parameters
-
-        converged = results[-1].converged
-        best_run_id = results[-1].best_index + pop_size * (results[-1].best_iteration + 1)
-        
-        parameter_distances.append(sum(results[-1].best_obj.parameter_dist))
-        lasso_objective = results[-1].best_obj.total_obj
-        lasso_objectives.append(lasso_objective)
-
-        print('LASSO', lasso_factor, ": objective: %f, converged: %d" % (lasso_objective, results[-1].converged))
-
-        if converged:
-            break
-        if lasso_factor < 0.05 and lasso_objective < 3:
-            print('Warning: LASSO fit is not great')
-            break
-        if lasso_factor < 0.01:
-            printParameters(results[-1], dyn_bounds, static_bounds, working_dir, 'LASSO_results.txt')
-            run_id = 0
-            obj = fobj2(best_parameters, 0, 'LASSO_failure')
-            fitted_curves = -100 * MergeRandomOutputs.mergeCurvesFromFics([os.path.join(working_dir, 'LASSO_failure', 'It_%03d' % 0, 'fic_MULTIPLE.xml')], curve_names, time_precision)
-            plotCurves(random_curves, centroids, 'Fit_LASSO', fitted_curves[:,:,0,:])
-            raise Exception('LASSO did not converge')
-        lasso_factor /= 2
-    printParameters(results[-1], dyn_bounds, static_bounds, working_dir, 'LASSO_results.txt')
-
-    plt.plot(parameter_distances, lasso_objectives)
-    plt.savefig('LASSO.pdf', bbox_inches='tight')
-
-    lasso_params_norm = normaliseParameters(best_parameters, bounds)
-    ax = plt.gca()
-    ax.set_ylim([0, 1])
-    plt.plot(lasso_params_norm)
-    plt.savefig('LASSO parameters.pdf', bbox_inches='tight')
-    parameter_names = getParameterNames(dyn_bounds, static_bounds)
-    for i in range(len(lasso_params_norm)):
-        if lasso_params_norm[i] == 0 or lasso_params_norm[i] == 1:
-            print('Warning:', parameter_names[i], 'has reached a bound following LASSO procedure')
-
-    # Update bounds
-    alpha = 1
-    nb_significant_parameters = 0
-    print('\nSignificant parameters')
-    for i in range(len(best_parameters)):
-        ref = (bounds[i][0] + bounds[i][1]) / 2
-        if abs(best_parameters[i] - ref) / ref > 0.05 or isTrippingParameter(parameter_names[i]):  # Parameter differs significantly from the reference value
-                                                                                                   # Or is a tripping parameter (never disgarded as could be
-                                                                                                   # significant for one disturbance but not the next)
-            bounds[i][0] = max(best_parameters[i] - alpha * best_parameters[i], bounds[i][0])
-            bounds[i][1] = min(best_parameters[i] + alpha * best_parameters[i], bounds[i][1])
-            if bounds[i][0] == bounds[i][1]:  # Probably useless
-                print(parameter_names[i], ': automatically neglected')
-            nb_significant_parameters += 1
-            print(parameter_names[i], ': 1')
-
-        else:  # Non-significant parameter, so set min and max bounds to the ref
-            bounds[i][0] = ref
-            bounds[i][1] = ref
-            print(parameter_names[i], ': 0')
-    print('\nSignificant parameters:', nb_significant_parameters, '/', len(best_parameters)) """
-
-
-
-    """ # Identify disturbances with the worst fit
-    min_b, max_b = np.asarray(bounds).T
-    mean_params = (min_b + max_b) / 2
-    run_id = 0
-    obj_per_name_disturb = fobj2(mean_params, 0, 'Average', rerun=rerun_average).obj_name_disturb
-    obj_per_disturbance = np.sum(obj_per_name_disturb, axis=0)
-
-    worst_disturbances = heapq.nlargest(2, range(len(obj_per_disturbance)), key=obj_per_disturbance.__getitem__)
-    print('Worst disturbances:', worst_disturbances)
-
-    worst_disturbances = [5]
-
-    # DE
-    print('\nDE')
-    convergence_criteria = 0.5
-    best_parameters = mean_params
-    while True:
-        # Train on the current set of disturbances
-        def fobj(value_list):
-            return fobj2(value_list, 0, 'Optimisation' + '_' + '_'.join(str(id) for id in worst_disturbances), disturbance_ids=worst_disturbances, convergence_criteria=convergence_criteria, rerun=rerun_de)
-        results = list(de(fobj, bounds, popsize=pop_size, its=nb_max_iterations_DE, init=best_parameters))
-        convergence_criteria = max(1, np.max(results[-1].best_obj.obj_name_disturb))  # Relax convergence criteria if does not converge for the trained disturbances
-        best_parameters = results[-1].best_parameters
-
-        print('DE', '_'.join(str(id) for id in worst_disturbances), ": objective: %f, converged: %d" % (results[-1].best_obj.total_obj, results[-1].converged))
-
-        # Check performance against all disturbances
-        print('\nOptimisation check' + '_' + '_'.join(str(id) for id in worst_disturbances))
-        run_id = 0
-        obj = fobj2(best_parameters, 0, 'OptimisationCheck' + '_' + '_'.join(str(id) for id in worst_disturbances), convergence_criteria=convergence_criteria, rerun=rerun_de)
-
-        converged = obj.converged
-        if converged or True:
-            break
-
-        # Add disturbance for which the fitting is the worst
-        worst_disturbance = np.argwhere(obj.obj_name_disturb == np.max(obj.obj_name_disturb))[0][1]
-        if worst_disturbance in worst_disturbances:
-            break
-        worst_disturbances.append(worst_disturbance)
-        print('\nAdded disturbance:', worst_disturbance) """
-
-    # Hot start from previous calls (make the script non reproducible (i.e. different results each time it is launched))
-    # with open(os.path.join(working_dir, 'Best_parameters.csv'), newline='') as csvfile:
-    #     reader = csv.reader(csvfile)
-    #     for row in reader:
-    #         best_parameters = row
-    #         for i in range(len(best_parameters)):
-    #             best_parameters[i] = float(best_parameters[i])
-    # results = list(de(fobj, bounds, popsize=pop_size, its=nb_max_iterations_DE, init=best_parameters))
 
     """ # Identify disturbances that do not lead to tripping
     percentile_5, percentile_95 = np.percentile(random_curves, axis=2, q=[5, 95])
@@ -783,26 +516,7 @@ if __name__ == "__main__":
     for d in range(nb_disturb):
         if abs(percentile_5[0, d, 0] - percentile_5[0, d, -1]) < 1e-2 and abs(percentile_95[0, d, 0] - percentile_95[0, d, -1]) < 1e-2:
             no_trip_cases.append(d)
-    print(no_trip_cases)
-
-    # DE no trip
-    print('\nDE no trip')
-    def fobj(value_list):
-        return fobj2(value_list, 0, 'Optimisation_no_trip', rerun=rerun_de_no_trip, disturbance_ids=no_trip_cases, convergence_criteria=0.1)
-    results = list(de(fobj, bounds, popsize=pop_size, its=nb_max_iterations_DE))
-    print('DE', ": objective: %f, converged: %d" % (results[-1].best_obj.total_obj, results[-1].converged))
-
-    best_run_id = results[-1].best_index + pop_size * (results[-1].best_iteration + 1)
-    fitted_curves = -100 * MergeRandomOutputs.mergeCurvesFromFics([os.path.join(working_dir, 'Optimisation_no_trip', "It_%03d" % best_run_id, 'fic_MULTIPLE.xml')], curve_names, time_precision)
-    plotCurves(random_curves[:,no_trip_cases,:,:], centroids, 'Fit_no_trip', fitted_curves[:,:,0,:])
-
-    # Tighten bounds on non-tripping-related parameters
-    best_parameters = results[-1].best_parameters
-    alpha = 1
-    for i in range(len(best_parameters)):
-        if not isTrippingParameter(parameter_names[i]) and 'target_p' not in parameter_names[i] and 'max_p' not in parameter_names[i]:
-            bounds[i][0] = max(bounds[i][0], best_parameters[i] - alpha * best_parameters[i])
-            bounds[i][1] = min(bounds[i][1], best_parameters[i] + alpha * best_parameters[i]) """
+    print(no_trip_cases) """
 
     # DE trip
     convergence_criteria = 1 # max(1, np.max(results[-1].best_obj.obj_name_disturb))
@@ -835,7 +549,7 @@ if __name__ == "__main__":
     fitted_curves = fitted_curves[:,:,0,:]  # Only a single run, so replace (curve_name, scenario, run, t_step) -> (curve_name, scenario, t_step)
 
     # random_curves = random_curves[:,no_trip_cases,:,:]
-    plotCurves(random_curves, centroids, 'Fit', fitted_curves)
+    plotCurves(random_curves, 'Fit', fitted_curves)
 
     # Find sample most representative of full model for comparison with equivalent
     median = np.median(random_curves, axis=2)  # average over runs
@@ -856,5 +570,4 @@ if __name__ == "__main__":
     print('Distance:', representative_dist)
 
     print('\nDE best run id:', best_run_id)
-    print('\nRepresentative index:', representative_index)
-    print(representative_dist)
+    print("Objective: %f, converged: %d" % (results[-1].best_obj.total_obj, results[-1].converged))
