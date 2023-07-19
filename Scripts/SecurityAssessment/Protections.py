@@ -274,10 +274,6 @@ def add_line_dist_protection_and_params(dyd_root, par_root, namespace, network_n
                 R3 = 99
                 X4 = 99
                 R4 = 99
-            
-            # Ib = Sb / (3**0.5 * Ub)
-            # Imax = line_limit / Ib
-            # reach = 0.85 / (1.5 * Imax)
 
             if randomise:
                 rand_measurement_ratio = 1 + random.uniform(-measurement_max_error, measurement_max_error)
@@ -445,14 +441,8 @@ if __name__ == "__main__":
         # Line/distance protection
         dyd_root.append(etree.Comment('Line protection'))
         bus2lines = get_buses_to_lines(network)
-        line_limits = [600, 1000, 500, 500, 500, 500, 600, 500, 1200, 900, 900, 480, 900, 900,  # From IEEE PES Power Grid Library - Optimal Power Flow - v21.07
-                    900, 600, 600, 600, 600, 600, 600, 600, 600, 600, 600, 600, 900, 600,
-                    600, 600, 600, 600, 600, 600]
 
-        line_number = 0
         for lineID in lines.index:
-            line_limit = line_limits[line_number]
-            line_number += 1
             add_line_dist_protection_and_params(dyd_root, par_root, namespace, network_name, network, bus2lines, lineID, CB_time, randomise, args.special, CB_max_error)
 
 
