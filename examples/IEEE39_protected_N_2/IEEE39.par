@@ -1,0 +1,2449 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <set id="Network">
+    <par type="DOUBLE" name="capacitor_no_reclosing_delay" value="300"/>
+    <par type="DOUBLE" name="dangling_line_currentLimit_maxTimeOperation" value="90"/>
+    <par type="DOUBLE" name="line_currentLimit_maxTimeOperation" value="90"/>
+    <par type="DOUBLE" name="load_Tp" value="90"/>
+    <par type="DOUBLE" name="load_Tq" value="90"/>
+    <par type="DOUBLE" name="load_alpha" value="2"/>
+    <par type="DOUBLE" name="load_alphaLong" value="0"/>
+    <par type="DOUBLE" name="load_beta" value="2"/>
+    <par type="DOUBLE" name="load_betaLong" value="0"/>
+    <par type="BOOL" name="load_isControllable" value="false"/>
+    <par type="BOOL" name="load_isRestorative" value="false"/>
+    <par type="DOUBLE" name="load_zPMax" value="100"/>
+    <par type="DOUBLE" name="load_zQMax" value="100"/>
+    <par type="DOUBLE" name="reactance_no_reclosing_delay" value="0"/>
+    <par type="DOUBLE" name="transformer_currentLimit_maxTimeOperation" value="90"/>
+    <par type="DOUBLE" name="transformer_t1st_HT" value="60"/>
+    <par type="DOUBLE" name="transformer_t1st_THT" value="30"/>
+    <par type="DOUBLE" name="transformer_tNext_HT" value="10"/>
+    <par type="DOUBLE" name="transformer_tNext_THT" value="10"/>
+    <par type="DOUBLE" name="transformer_tolV" value="0.015"/>
+  </set>
+  <set id="GenericLoadAlphaBeta">
+    <par type="DOUBLE" name="load_Alpha" value="2"/>
+    <par type="DOUBLE" name="load_Beta" value="2"/>
+    <par type="DOUBLE" name="load_tFilter" value="5"/>
+    <par type="DOUBLE" name="load_UMaxPu" value="1.2"/>
+    <par type="DOUBLE" name="load_UMinPu" value="0.5"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="Generator30">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <!--Neglect saturation to ease comparison between simulators-->
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.3186"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0046"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.155"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.110"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.280"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.215"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="4.200"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.032"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.020"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="0.490"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.215"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="0.565"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.062"/>
+    <par type="DOUBLE" name="generator_UNom" value="22"/>
+    <par type="DOUBLE" name="generator_SNom" value="590"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="560.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="560.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="590"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="22"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="22"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="560.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="560.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.080"/>
+    <par type="DOUBLE" name="governor_T2" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T3" value="0.150"/>
+    <par type="DOUBLE" name="governor_T4" value="0.050"/>
+    <par type="DOUBLE" name="governor_T5" value="10.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.280"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="5.730"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-5.730"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="200"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.3575"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.004"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.0529"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="4.2975"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.000"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.730"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="0.000"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator31">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator32">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator33">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="0"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator34">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="230"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="230"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator35">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator36">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator37">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.6419"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0019"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.246"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.183"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.413"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="5.690"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.041"/>
+    <par type="DOUBLE" name="generator_XqPu" value="2.157"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="1.285"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.339"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="1.500"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.144"/>
+    <par type="DOUBLE" name="generator_UNom" value="20"/>
+    <par type="DOUBLE" name="generator_SNom" value="835"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="751.5"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="751.5"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="835"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="20"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="20"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="751.5"/>
+    <par type="DOUBLE" name="governor_PNom" value="751.5"/>
+    <par type="DOUBLE" name="governor_T1" value="0.180"/>
+    <par type="DOUBLE" name="governor_T2" value="0.030"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T5" value="8.000"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-18.3"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="400"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.020"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="1.000"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.942"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.03"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.765"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.8147"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="5.020"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="2.6756"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator38">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="2.4862"/>
+    <par type="DOUBLE" name="generator_RaPu" value="0.0010"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.154"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.040"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.266"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.193"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="6.000"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.004"/>
+    <par type="DOUBLE" name="generator_XqPu" value="1.960"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="0.262"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.193"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="0.900"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.004"/>
+    <par type="DOUBLE" name="generator_UNom" value="26"/>
+    <par type="DOUBLE" name="generator_SNom" value="1400.222"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="830"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="830"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="1400.222"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="26"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="26"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="830"/>
+    <par type="DOUBLE" name="governor_PNom" value="830"/>
+    <par type="DOUBLE" name="governor_T1" value="0.100"/>
+    <par type="DOUBLE" name="governor_T2" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.100"/>
+    <par type="DOUBLE" name="governor_T5" value="8.720"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="1.5"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-1"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="50"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.060"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="-0.0393"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.140"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.07"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.375"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.0644"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="4.5"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="0.2363"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="Generator39">
+    <par type="INT" name="generator_ExcitationPu" value="1"/>
+    <par type="BOOL" name="generator_UseApproximation" value="true"/>
+    <par type="DOUBLE" name="generator_md" value="0.0"/>
+    <par type="DOUBLE" name="generator_mq" value="0.0"/>
+    <par type="DOUBLE" name="generator_nd" value="0.0"/>
+    <par type="DOUBLE" name="generator_nq" value="0.0"/>
+    <par type="DOUBLE" name="generator_MdPuEfd" value="0"/>
+    <par type="DOUBLE" name="generator_DPu" value="2"/>
+    <par type="DOUBLE" name="generator_H" value="5"/>
+    <!--500/11.1111-->
+    <par type="DOUBLE" name="generator_RaPu" value="0.0010"/>
+    <par type="DOUBLE" name="generator_XlPu" value="0.154"/>
+    <par type="DOUBLE" name="generator_XdPu" value="2.040"/>
+    <par type="DOUBLE" name="generator_XpdPu" value="0.266"/>
+    <par type="DOUBLE" name="generator_XppdPu" value="0.193"/>
+    <par type="DOUBLE" name="generator_Tpd0" value="6.000"/>
+    <par type="DOUBLE" name="generator_Tppd0" value="0.004"/>
+    <par type="DOUBLE" name="generator_XqPu" value="1.960"/>
+    <par type="DOUBLE" name="generator_XpqPu" value="0.262"/>
+    <par type="DOUBLE" name="generator_XppqPu" value="0.193"/>
+    <par type="DOUBLE" name="generator_Tpq0" value="0.900"/>
+    <par type="DOUBLE" name="generator_Tppq0" value="0.004"/>
+    <par type="DOUBLE" name="generator_UNom" value="26"/>
+    <par type="DOUBLE" name="generator_SNom" value="1111.1111"/>
+    <par type="DOUBLE" name="generator_PNomTurb" value="1000"/>
+    <par type="DOUBLE" name="generator_PNomAlt" value="1000"/>
+    <par type="DOUBLE" name="generator_SnTfo" value="1111.1111"/>
+    <par type="DOUBLE" name="generator_UNomHV" value="345"/>
+    <par type="DOUBLE" name="generator_UNomLV" value="26"/>
+    <par type="DOUBLE" name="generator_UBaseHV" value="345"/>
+    <par type="DOUBLE" name="generator_UBaseLV" value="26"/>
+    <par type="DOUBLE" name="generator_RTfPu" value="0.0"/>
+    <par type="DOUBLE" name="generator_XTfPu" value="0.1"/>
+    <par type="DOUBLE" name="governor_KGover" value="5"/>
+    <par type="DOUBLE" name="governor_PMin" value="0"/>
+    <par type="DOUBLE" name="governor_PMax" value="1000"/>
+    <par type="DOUBLE" name="governor_PNom" value="1000"/>
+    <par type="DOUBLE" name="governor_T1" value="0.100"/>
+    <par type="DOUBLE" name="governor_T2" value="0.0001"/>
+    <par type="DOUBLE" name="governor_T3" value="0.200"/>
+    <par type="DOUBLE" name="governor_T4" value="0.100"/>
+    <par type="DOUBLE" name="governor_T5" value="8.720"/>
+    <par type="DOUBLE" name="governor_F" value="0.300"/>
+    <par type="DOUBLE" name="Pm_ValueIn" value="0"/>
+    <par type="DOUBLE" name="URef_ValueIn" value="0"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmax" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_VRmin" value="-1"/>
+    <par type="DOUBLE" name="voltageRegulator_Tr" value="0.0001"/>
+    <par type="DOUBLE" name="voltageRegulator_Ka" value="50"/>
+    <par type="DOUBLE" name="voltageRegulator_Ta" value="0.060"/>
+    <par type="DOUBLE" name="voltageRegulator_Ke" value="-0.0393"/>
+    <par type="DOUBLE" name="voltageRegulator_Te" value="0.440"/>
+    <par type="DOUBLE" name="voltageRegulator_Kf" value="0.07"/>
+    <par type="DOUBLE" name="voltageRegulator_Tf" value="1"/>
+    <par type="DOUBLE" name="voltageRegulator_E1" value="3.375"/>
+    <par type="DOUBLE" name="voltageRegulator_SE1" value="0.0644"/>
+    <par type="DOUBLE" name="voltageRegulator_E2" value="4.5"/>
+    <par type="DOUBLE" name="voltageRegulator_SE2" value="0.2363"/>
+    <reference name="generator_P0Pu" origData="IIDM" origName="p_pu" type="DOUBLE"/>
+    <reference name="generator_Q0Pu" origData="IIDM" origName="q_pu" type="DOUBLE"/>
+    <reference name="generator_U0Pu" origData="IIDM" origName="v_pu" type="DOUBLE"/>
+    <reference name="generator_UPhase0" origData="IIDM" origName="angle_pu" type="DOUBLE"/>
+  </set>
+  <set id="OmegaRef">
+    <par type="INT" name="nbGen" value="8"/>
+    <par type="DOUBLE" name="omegaRefMin" value="0.95"/>
+    <par type="DOUBLE" name="omegaRefMax" value="1.05"/>
+    <par type="DOUBLE" name="weight_gen_0" value="1367.974"/>
+    <par type="DOUBLE" name="weight_gen_1" value="2205.9865"/>
+    <par type="DOUBLE" name="weight_gen_2" value="2205.9865"/>
+    <par type="DOUBLE" name="weight_gen_3" value="2205.9865"/>
+    <par type="DOUBLE" name="weight_gen_4" value="2205.9865"/>
+    <par type="DOUBLE" name="weight_gen_5" value="2205.9865"/>
+    <par type="DOUBLE" name="weight_gen_6" value="2292.8283"/>
+    <par type="DOUBLE" name="weight_gen_7" value="55555.555"/>
+  </set>
+  <set id="Fault">
+    <par type="DOUBLE" name="fault_RPu" value="0.0001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.0001"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.1"/>
+  </set>
+  <set id="IDAOrder2">
+    <par type="INT" name="order" value="2"/>
+    <par type="DOUBLE" name="initStep" value="1e-7"/>
+    <par type="DOUBLE" name="minStep" value="1e-7"/>
+    <par type="DOUBLE" name="minimalAcceptableStep" value="1e-7"/>
+    <par type="INT" name="maximumNumberSlowStepIncrease" value="20"/>
+    <par type="DOUBLE" name="maxStep" value="10"/>
+    <par type="DOUBLE" name="absAccuracy" value="1e-4"/>
+    <par type="DOUBLE" name="relAccuracy" value="1e-4"/>
+  </set>
+  <set id="3">
+    <par type="DOUBLE" name="hMin" value="1e-7"/>
+    <par type="DOUBLE" name="minimalAcceptableStep" value="1e-7"/>
+    <par type="DOUBLE" name="hMax" value="0.005"/>
+    <par type="DOUBLE" name="kReduceStep" value="0.5"/>
+    <par type="INT" name="maxNewtonTry" value="10"/>
+    <par type="STRING" name="linearSolverName" value="KLU"/>
+  </set>
+  <set id="Generator39_Disc">
+    <par type="DOUBLE" name="event_tEvent" value="1.1"/>
+    <par type="INT" name="event_nbEventVariables" value="1"/>
+    <par type="BOOL" name="event_stateEvent1" value="true"/>
+    <par type="BOOL" name="event_disconnectExtremity" value="true"/>
+    <par type="BOOL" name="event_disconnectOrigin" value="false"/>
+  </set>
+  <set id="DummyLoad">
+    <par type="DOUBLE" name="load_alpha" value="2"/>
+    <par type="DOUBLE" name="load_beta" value="2"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="GEN___30_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___30_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___30_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___31_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___31_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___31_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___32_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___32_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___32_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___33_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___33_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___33_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___35_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___35_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___35_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___37_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___37_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___37_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___38_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___38_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___38_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___39_SM_Speed">
+    <par type="DOUBLE" name="speedProtection_OmegaMaxPu" value="1.05"/>
+    <par type="DOUBLE" name="speedProtection_OmegaMinPu" value="0.95"/>
+    <par type="DOUBLE" name="speedProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="GEN___39_SM_UVA">
+    <par type="DOUBLE" name="underVoltageAutomaton_UMinPu" value="0.85"/>
+    <par type="DOUBLE" name="underVoltageAutomaton_tLagAction" value="1.5"/>
+  </set>
+  <set id="GEN___39_SM_InternalAngle">
+    <par type="DOUBLE" name="lossOfSynchronismProtection_ThetaMin" value="2.356194490192345"/>
+    <par type="DOUBLE" name="lossOfSynchronismProtection_tLagAction" value="0.1"/>
+  </set>
+  <set id="UFLS">
+    <par type="DOUBLE" name="ufls_UFLSStep_1_" value="0.1"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_2_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_3_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_4_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_5_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_6_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_7_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_8_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_9_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_UFLSStep_10_" value="0.05"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_1_" value="0.98"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_2_" value="0.978"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_3_" value="0.976"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_4_" value="0.974"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_5_" value="0.972"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_6_" value="0.97"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_7_" value="0.968"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_8_" value="0.966"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_9_" value="0.964"/>
+    <par type="DOUBLE" name="ufls_omegaThresholdPu_10_" value="0.962"/>
+    <par type="DOUBLE" name="ufls_tLagAction" value="0.1"/>
+  </set>
+  <set id="_BUS____1-BUS____2-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.03288001680319261"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.03288001680319261"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.04726502415458937"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.04726502415458937"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.05846504515858013"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.05846504515858013"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.07015805419029615"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.07015805419029615"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____1-BUS____2-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.03288001680319261"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.03288001680319261"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.05611505103969755"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.05611505103969755"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.0698500693131695"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.0698500693131695"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.0838200831758034"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.0838200831758034"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____1-BUS___39-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.041625069943289225"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.041625069943289225"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.05375009031716026"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.05375009031716026"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.06450010838059231"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.06450010838059231"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____1-BUS___39-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.0539415538752363"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.0539415538752363"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.07226506616257089"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.07226506616257089"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.08671807939508507"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.08671807939508507"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____2-BUS____3-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.023764502835538753"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.023764502835538753"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03959499684940138"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03959499684940138"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04751399621928166"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04751399621928166"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____2-BUS____3-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.020169051039697544"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.020169051039697544"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.06236504515858013"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.06236504515858013"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.07483805419029615"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.07483805419029615"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____2-BUS___25-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0068800336063852136"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0068800336063852136"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.03244955387523629"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.03244955387523629"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.04574506616257089"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.04574506616257089"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.05489407939508507"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.05489407939508507"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____2-BUS___25-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0068800336063852136"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0068800336063852136"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.019291553875236293"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.019291553875236293"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.05586506616257089"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.05586506616257089"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.06703807939508506"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.06703807939508506"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____3-BUS____4-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.017039983196807395"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.017039983196807395"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02896198109640832"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02896198109640832"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03613495484141987"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03613495484141987"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04336194580970384"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04336194580970384"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____3-BUS____4-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.017039983196807395"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.017039983196807395"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.029344465028355384"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.029344465028355384"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.038665003150598606"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.038665003150598606"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.046398003780718323"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.046398003780718323"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____3-BUS___18-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.010639983196807394"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.010639983196807394"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.018243013232514177"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.018243013232514177"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.022730027305187986"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.022730027305187986"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.02727603276622558"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.02727603276622558"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____3-BUS___18-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.010639983196807394"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.010639983196807394"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.023521497164461246"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.023521497164461246"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03779495484141987"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03779495484141987"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.045353945809703845"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.045353945809703845"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____4-BUS____5-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.01024"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.01024"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.014719999999999999"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.014719999999999999"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02568"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02568"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.030816"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.030816"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____4-BUS____5-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.01024"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.01024"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02138848393194707"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02138848393194707"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.037294975845410624"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.037294975845410624"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04475397101449275"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04475397101449275"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____4-BUS___14-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.010319983196807395"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.010319983196807395"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.019336465028355388"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.019336465028355388"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03785495484141987"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03785495484141987"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04542594580970384"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04542594580970384"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____4-BUS___14-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.010319983196807395"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.010319983196807395"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.021401981096408316"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.021401981096408316"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.037394954841419865"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.037394954841419865"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04487394580970384"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04487394580970384"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____5-BUS____6-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.002080033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.002080033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.008613069943289225"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.008613069943289225"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.013180042007981516"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.013180042007981516"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.015816050409577818"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.015816050409577818"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____5-BUS____6-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.002080033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.002080033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.010908037807183364"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.010908037807183364"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.017320042007981516"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.017320042007981516"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.020784050409577818"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.020784050409577818"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____5-BUS____8-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.008960000000000001"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.008960000000000001"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.01359903213610586"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.01359903213610586"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.052945024154589376"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.052945024154589376"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.06353402898550725"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.06353402898550725"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____5-BUS____8-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.008960000000000001"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.008960000000000001"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.012879999999999999"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.012879999999999999"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02592"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02592"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.031103999999999996"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.031103999999999996"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____6-BUS____7-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.00736"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.00736"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.011799032136105862"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.011799032136105862"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.014490048309178744"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.014490048309178744"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.017388057971014493"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.017388057971014493"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____6-BUS____7-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.00736"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.00736"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.010579999999999999"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.010579999999999999"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.01863004830917874"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.01863004830917874"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.02235605797101449"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.02235605797101449"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____6-BUS___11-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.010669553875236295"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.010669553875236295"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.013145066162570888"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.013145066162570888"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.015774079395085065"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.015774079395085065"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____6-BUS___11-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.009430048309178743"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.009430048309178743"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.018780042007981515"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.018780042007981515"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.022536050409577818"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.022536050409577818"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____7-BUS____8-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.003680033606385214"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.003680033606385214"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.012708037807183364"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.012708037807183364"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.04634506616257089"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.04634506616257089"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.055614079395085066"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.055614079395085066"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____7-BUS____8-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.003680033606385214"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.003680033606385214"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.011178037807183364"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.011178037807183364"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.015180042007981516"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.015180042007981516"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.018216050409577817"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.018216050409577817"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____8-BUS____9-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.02904001680319261"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.02904001680319261"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.051795051039697546"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.051795051039697546"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.0650500693131695"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.0650500693131695"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.0780600831758034"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.0780600831758034"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____8-BUS____9-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.02904001680319261"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.02904001680319261"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.041745024154589375"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.041745024154589375"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.049180021003990756"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.049180021003990756"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.05901602520478891"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.05901602520478891"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____9-BUS___39-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.041625069943289225"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.041625069943289225"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.05375009031716026"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.05375009031716026"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.06450010838059231"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.06450010838059231"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS____9-BUS___39-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.020000033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.0502695538752363"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.0502695538752363"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.06674506616257089"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.06674506616257089"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.08009407939508507"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.08009407939508507"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___10-BUS___11-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.010143051039697542"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.010143051039697542"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.013730069313169502"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.013730069313169502"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.016476083175803402"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.016476083175803402"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___10-BUS___11-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.007159534971644613"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.007159534971644613"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.00924504515858013"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.00924504515858013"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.011094054190296156"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.011094054190296156"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___10-BUS___13-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.011596502835538751"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.011596502835538751"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.015914996849401383"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.015914996849401383"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.019097996219281658"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.019097996219281658"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___10-BUS___13-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0034400168031926068"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.007159534971644613"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.007159534971644613"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.00924504515858013"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.00924504515858013"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.011094054190296156"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.011094054190296156"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___13-BUS___14-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.008079983196807394"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.008079983196807394"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.018958465028355385"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.018958465028355385"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03505495484141987"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03505495484141987"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.042065945809703846"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.042065945809703846"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___13-BUS___14-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.008079983196807394"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.008079983196807394"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.012379497164461248"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.012379497164461248"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.015045003150598613"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.015045003150598613"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.018054003780718336"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.018054003780718336"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___14-BUS___15-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.017359983196807396"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.017359983196807396"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02672101323251418"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02672101323251418"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03251002730518798"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03251002730518798"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.03901203276622558"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.03901203276622558"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___14-BUS___15-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.017359983196807396"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.017359983196807396"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.027256465028355388"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.027256465028355388"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03653495484141987"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03653495484141987"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.043841945809703846"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.043841945809703846"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___15-BUS___16-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.007520033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.007520033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.012973553875236295"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.012973553875236295"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.031825066162570886"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.031825066162570886"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.038190079395085064"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.038190079395085064"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___15-BUS___16-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.007520033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.007520033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.025060521739130436"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.025060521739130436"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03435501785339214"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03435501785339214"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04122602142407057"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04122602142407057"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___17-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.007119983196807393"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.007119983196807393"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.014283013232514177"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.014283013232514177"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02879495484141987"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02879495484141987"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.03455394580970384"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.03455394580970384"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___17-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.007119983196807393"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.007119983196807393"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.012523497164461246"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.012523497164461246"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.031325003150598614"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.031325003150598614"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.037590003780718334"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.037590003780718334"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___19-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.015600016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.015600016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02242502415458937"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02242502415458937"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.0001"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.0001"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.0001"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.0001"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___19-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.015600016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.015600016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02242502415458937"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02242502415458937"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.035025045158580126"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.035025045158580126"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04203005419029615"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04203005419029615"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___21-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.010800016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.010800016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.022860018903591683"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.022860018903591683"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.029600021003990756"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.029600021003990756"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.035520025204788905"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.035520025204788905"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___21-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.010800016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.010800016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.016663534971644613"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.016663534971644613"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.03592504515858013"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.03592504515858013"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.043110054190296156"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.043110054190296156"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___24-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.004720016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.004720016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.03208505103969754"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.03208505103969754"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.04615006931316949"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.04615006931316949"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.05538008317580339"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.05538008317580339"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___16-BUS___24-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.004720016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.004720016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.012118502835538753"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.012118502835538753"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02832504515858013"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02832504515858013"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.03399005419029615"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.03399005419029615"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___17-BUS___18-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.017554521739130434"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.017554521739130434"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02349501785339214"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02349501785339214"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.02819402142407057"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.02819402142407057"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___17-BUS___18-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.006560033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.014188521739130435"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.014188521739130435"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02809501785339214"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02809501785339214"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.03371402142407057"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.03371402142407057"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___17-BUS___27-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.013839983196807393"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.013839983196807393"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.026815497164461247"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.026815497164461247"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.034205003150598615"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.034205003150598615"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.041046003780718335"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.041046003780718335"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___17-BUS___27-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.013839983196807393"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.013839983196807393"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02184301323251418"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02184301323251418"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.027534954841419868"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.027534954841419868"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.03304194580970384"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.03304194580970384"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___21-BUS___22-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0112"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0112"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.019944"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.019944"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.025039999999999996"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.025039999999999996"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.030047999999999995"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.030047999999999995"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___21-BUS___22-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0112"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0112"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02292751606805293"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02292751606805293"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.02952502415458937"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.02952502415458937"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.03543002898550724"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.03543002898550724"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___22-BUS___23-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.007679999999999999"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.007679999999999999"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.035415032136105855"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.035415032136105855"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.04985004830917873"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.04985004830917873"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.05982005797101447"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.05982005797101447"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___22-BUS___23-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.007679999999999999"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.007679999999999999"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.01935"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.01935"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.025699999999999994"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.025699999999999994"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.030839999999999992"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.030839999999999992"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___23-BUS___24-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.028000033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.028000033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.040250048309178735"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.040250048309178735"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.04178506616257088"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.04178506616257088"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.05014207939508506"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.05014207939508506"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___23-BUS___24-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.028000033606385213"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.028000033606385213"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.040250048309178735"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.040250048309178735"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.04604004200798151"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.04604004200798151"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.05524805040957781"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.05524805040957781"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___25-BUS___26-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.025840016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.025840016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.04031553497164461"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.04031553497164461"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.10417499684940137"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.10417499684940137"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.12500999621928163"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.12500999621928163"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___25-BUS___26-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.025840016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.025840016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.03714502415458937"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.03714502415458937"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.0421900693131695"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.0421900693131695"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.0506280831758034"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.0506280831758034"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___26-BUS___27-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.011760016803192608"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.011760016803192608"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.02646450283553875"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.02646450283553875"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.034594996849401385"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.034594996849401385"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.04151399621928166"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.04151399621928166"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___26-BUS___27-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.011760016803192608"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.011760016803192608"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.03793953497164461"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.03793953497164461"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.08657499684940138"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.08657499684940138"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.10388999621928166"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.10388999621928166"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___26-BUS___28-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.03792003360638522"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.03792003360638522"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.054510048309178744"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.054510048309178744"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.06476506616257088"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.06476506616257088"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.07771807939508506"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.07771807939508506"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___26-BUS___28-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.03792003360638522"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.03792003360638522"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.054510048309178744"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.054510048309178744"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.11927501785339215"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.11927501785339215"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.14313002142407058"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.14313002142407058"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___26-BUS___29-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0499999831968074"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0499999831968074"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.07187497584541062"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.07187497584541062"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.0798650031505986"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.0798650031505986"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.09583800378071833"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.09583800378071833"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___26-BUS___29-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.0499999831968074"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.0499999831968074"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.07187497584541062"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.07187497584541062"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.11701002730518799"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.11701002730518799"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.14041203276622558"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.14041203276622558"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___28-BUS___29-1_AC_side1_Distance">
+    <par type="INT" name="distance_LineSide" value="1"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.06140250283553876"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.06140250283553876"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.08697499684940138"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.08697499684940138"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.10436999621928165"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.10436999621928165"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="_BUS___28-BUS___29-1_AC_side2_Distance">
+    <par type="INT" name="distance_LineSide" value="2"/>
+    <par type="DOUBLE" name="distance_tZone_1_" value="999999"/>
+    <par type="DOUBLE" name="distance_tZone_2_" value="0.3"/>
+    <par type="DOUBLE" name="distance_tZone_3_" value="0.6"/>
+    <par type="DOUBLE" name="distance_tZone_4_" value="999999"/>
+    <par type="DOUBLE" name="distance_RPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_XPu_1_" value="0.012080016803192607"/>
+    <par type="DOUBLE" name="distance_RPu_2_" value="0.049851051039697544"/>
+    <par type="DOUBLE" name="distance_XPu_2_" value="0.049851051039697544"/>
+    <par type="DOUBLE" name="distance_RPu_3_" value="0.0696100693131695"/>
+    <par type="DOUBLE" name="distance_XPu_3_" value="0.0696100693131695"/>
+    <par type="DOUBLE" name="distance_RPu_4_" value="0.08353208317580339"/>
+    <par type="DOUBLE" name="distance_XPu_4_" value="0.08353208317580339"/>
+    <par type="DOUBLE" name="distance_CircuitBreakerTime" value="0.08"/>
+    <par type="BOOL" name="distance_TrippingZone_1_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_2_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_3_" value="true"/>
+    <par type="BOOL" name="distance_TrippingZone_4_" value="true"/>
+  </set>
+  <set id="DymmyLoad">
+    <par type="DOUBLE" name="load_alpha" value="2"/>
+    <par type="DOUBLE" name="load_beta" value="2"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="InitFault">
+    <par type="DOUBLE" name="fault_RPu" value="0.0001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.0001"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.1"/>
+  </set>
+  <set id="InitFaultBackup">
+    <par type="DOUBLE" name="fault_RPu" value="0.0001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.0001"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____1-BUS____2-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.003600021003990758"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.04120002100399076"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____1-BUS___39-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0011000420079815166"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.025100042007981514"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____2-BUS____3-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0013999789960092417"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.015200021003990757"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____2-BUS___25-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0071000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.008700042007981516"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____3-BUS____4-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0013999789960092417"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.02139997899600924"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____3-BUS___18-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0012000210039907581"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.01339997899600924"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____4-BUS____5-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009000000000000001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.0129"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____4-BUS___14-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009000000000000001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.012999978996009241"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____5-BUS____6-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0003000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.002700042007981516"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____5-BUS____8-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009000000000000001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.0113"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____6-BUS____7-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0007000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.0093"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____6-BUS___11-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0008000210039907583"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.008300042007981515"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____7-BUS____8-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0005"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.004700042007981517"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____8-BUS____9-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0024000210039907583"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.036400021003990764"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS____9-BUS___39-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0011000420079815166"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.025100042007981514"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___10-BUS___11-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0005"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.004400021003990759"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___10-BUS___13-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0005"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.004400021003990759"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___13-BUS___14-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009999789960092418"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.01019997899600924"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___14-BUS___15-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0019000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.02179997899600924"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___15-BUS___16-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009999789960092418"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.009500042007981515"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___16-BUS___17-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0008000210039907583"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.00899997899600924"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___16-BUS___19-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0017000000000000001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.019600021003990758"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___16-BUS___21-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009000000000000001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.013600021003990758"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___16-BUS___24-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0004000210039907582"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.006000021003990759"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___17-BUS___18-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0008000210039907583"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.008300042007981515"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___17-BUS___27-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0013999789960092417"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.01739997899600924"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___21-BUS___22-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0009000000000000001"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.014099999999999998"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___22-BUS___23-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0007000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.009699999999999999"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___23-BUS___24-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.002300042007981516"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.035100042007981516"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___25-BUS___26-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0033"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.03240002100399076"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___26-BUS___27-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0015000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.014800021003990757"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___26-BUS___28-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.004400021003990759"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.047500042007981524"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___26-BUS___29-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.005799978996009242"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.06259997899600925"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="Replacement fault__BUS___28-BUS___29-1_AC">
+    <par type="DOUBLE" name="fault_RPu" value="0.0015000420079815165"/>
+    <par type="DOUBLE" name="fault_XPu" value="0.015200021003990757"/>
+    <par type="DOUBLE" name="fault_tBegin" value="5.1"/>
+    <par type="DOUBLE" name="fault_tEnd" value="5.2"/>
+  </set>
+  <set id="LineDisc">
+    <par type="DOUBLE" name="event_tEvent" value="5.1"/>
+    <par type="BOOL" name="event_disconnectOrigin" value="true"/>
+    <par type="BOOL" name="event_disconnectExtremity" value="true"/>
+  </set>
+  <set id="AdjLineDisc">
+    <par type="DOUBLE" name="event_tEvent" value="5.2"/>
+    <par type="BOOL" name="event_disconnectOrigin" value="true"/>
+    <par type="BOOL" name="event_disconnectExtremity" value="true"/>
+  </set>
+  <set id="GenDisc">
+    <par type="DOUBLE" name="event_tEvent" value="5.1"/>
+    <par type="BOOL" name="event_stateEvent1" value="true"/>
+  </set>
+  <set id="AdjGenDisc">
+    <par type="DOUBLE" name="event_tEvent" value="5.2"/>
+    <par type="BOOL" name="event_stateEvent1" value="true"/>
+  </set>
+</parametersSet>

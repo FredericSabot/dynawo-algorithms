@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+    Copyright (c) 2023, RTE (http://www.rte-france.com)
+    See AUTHORS.txt
+    All rights reserved.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, you can obtain one at http://mozilla.org/MPL/2.0/.
+    SPDX-License-Identifier: MPL-2.0
+
+    This file is part of Dynawo, an hybrid C++/Modelica open source suite
+    of simulation tools for power systems.
+-->
+<multipleJobs xmlns="http://www.rte-france.com/dynawo">
+	<scenarios jobsFile="reduced.jobs">
+    <scenario id="VDrop1" dydFile="VDrop1_reduced.dyd"/>
+    <scenario id="VDrop2" dydFile="VDrop2_reduced.dyd"/>
+    <scenario id="VDrop3" dydFile="VDrop3_reduced.dyd"/>
+    <scenario id="VDrop4" dydFile="VDrop4_reduced.dyd"/>
+    <scenario id="VDrop5" dydFile="VDrop5_reduced.dyd"/>
+    <scenario id="VDrop6" dydFile="VDrop6_reduced.dyd"/>
+    <scenario id="VDrop7" dydFile="VDrop7_reduced.dyd"/>
+    <scenario id="VDrop8" dydFile="VDrop8_reduced.dyd"/>
+    <scenario id="VDrop9" dydFile="VDrop9_reduced.dyd"/>
+    <scenario id="VDrop10" dydFile="VDrop10_reduced.dyd"/>
+    <scenario id="VDrop11" dydFile="VDrop11_reduced.dyd"/>
+    <scenario id="VDrop12" dydFile="VDrop12_reduced.dyd"/>
+    <scenario id="VDrop13" dydFile="VDrop13_reduced.dyd"/>
+    <scenario id="VDrop14" dydFile="VDrop14_reduced.dyd"/>
+	</scenarios>
+</multipleJobs>

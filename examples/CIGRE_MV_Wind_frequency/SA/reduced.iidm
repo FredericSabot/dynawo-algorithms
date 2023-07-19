@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_4" id="Reduced_CIGRE_MV" caseDate="2022-02-16T12:49:39.424+01:00" forecastDistance="0" sourceFormat="MATPOWER" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
+    <iidm:substation id="SUB-0">
+        <iidm:voltageLevel id="VL-0" nominalV="110.0" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="B-0" v="113.3" angle="0.0"/>
+            </iidm:busBreakerTopology>
+            <iidm:generator id="GEN-slack" energySource="OTHER" minP="-1.0E9" maxP="1.0E9" voltageRegulatorOn="true" targetP="2.576996612900802" targetV="113.3" targetQ="0.6244389480103828" bus="B-0" connectableBus="B-0" p="-2.576996612900802" q="-0.626502266360761">
+                <iidm:minMaxReactiveLimits minQ="-1.7976931348623157E308" maxQ="1.7976931348623157E308"/>
+            </iidm:generator>
+            <iidm:load id="LOAD-slack" loadType="UNDEFINED" p0="-0.0359473499530142" q0="0.8536831175367056" bus="B-0" connectableBus="B-0" p="-0.0359473499530142" q="0.8536831175367056"/>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="VL-1" nominalV="20.0" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="B-1" v="20.600011028587208" angle="-3.5281226746822534E-4"/>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="T0-1" name="TFO1-2" r="0.0" x="0.001" g="0.0" b="0.0" ratedU1="110.0" ratedU2="20.0" bus1="B-0" connectableBus1="B-0" voltageLevelId1="VL-0" bus2="B-1" connectableBus2="B-1" voltageLevelId2="VL-1" p1="2.6130981243167186" q1="-0.22718085117594458" p2="-2.613098124316718" q2="0.22719706349748292"/>
+    </iidm:substation>
+    <iidm:substation id="SUB-2">
+        <iidm:voltageLevel id="VL-2" nominalV="20.0" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="B-2" v="20.262664745140416" angle="-2.357537364845649"/>
+            </iidm:busBreakerTopology>
+            <iidm:generator id="IBG-2" energySource="OTHER" minP="0.0" maxP="2.0" voltageRegulatorOn="false" targetP="1.8" targetV="20.0" targetQ="0.3888162682642092" bus="B-2" connectableBus="B-2" p="-1.8" q="-0.3888162682642092">
+                <iidm:minMaxReactiveLimits minQ="-1.7976931348623157E308" maxQ="1.7976931348623157E308"/>
+            </iidm:generator>
+            <iidm:generator id="IBG-3" energySource="OTHER" minP="0.0" maxP="2.0" voltageRegulatorOn="false" targetP="0.6409586311423244" targetV="20.0" targetQ="0.14" bus="B-2" connectableBus="B-2" p="-0.6409586311423244" q="-0.14">
+                <iidm:minMaxReactiveLimits minQ="-1.7976931348623157E308" maxQ="1.7976931348623157E308"/>
+            </iidm:generator>
+            <iidm:load id="LOAD-2" loadType="UNDEFINED" p0="5.0" q0="0.2" bus="B-2" connectableBus="B-2" p="5.0" q="0.2"/>
+        </iidm:voltageLevel>
+    </iidm:substation>
+    <iidm:line id="LINE-1-2" r="3.3402821278739703" x="6.279272904897326" g1="0.0" b1="0.0" g2="0.0" b2="0.0" bus1="B-1" connectableBus1="B-1" voltageLevelId1="VL-1" bus2="B-2" connectableBus2="B-2" voltageLevelId2="VL-2" p1="2.6131994311359024" q1="-0.22714271545609593" p2="-2.559041476773268" q2="0.32895225201472966"/>
+</iidm:network>

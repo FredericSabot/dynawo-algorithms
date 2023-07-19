@@ -1,0 +1,13 @@
+ParamSet_id,Param_id,L_bound,U_bound
+IBG-2,ibg_pOmegaPu,0.001,0.03
+IBG-2,ibg_rOmega,0,1
+IBG-2,ibg_sOmega,0,1
+IBG-2,ibg_OmegaMaxPu,1.02,1.05
+IBG-2,ibg_OmegaDeadBandPu,1.01,1.04
+IBG-2,ibg_OmegaMinPu,0.95,0.98
+IBG-3,ibg_pOmegaPu,0.001,0.03
+IBG-3,ibg_rOmega,0,1
+IBG-3,ibg_sOmega,0,1
+IBG-3,ibg_OmegaMaxPu,1.02,1.05
+IBG-3,ibg_OmegaDeadBandPu,1.01,1.04
+IBG-3,ibg_OmegaMinPu,0.95,0.98
