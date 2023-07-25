@@ -40,7 +40,7 @@ def add_gen_speed_protection_and_params(dyd_root, par_root, namespace, network_n
     protectionID = genID + '_Speed'
     speed_attrib = {'id': protectionID, 'lib': 'SpeedProtection', 'parFile': network_name + '.par', 'parId': protectionID}
     etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), speed_attrib)
-    
+
     connect_attribs = [
         {'id1': protectionID, 'var1': 'speedProtection_omegaMonitoredPu', 'id2': genID, 'var2': 'generator_omegaPu_value'},
         {'id1': protectionID, 'var1': 'speedProtection_switchOffSignal', 'id2': genID, 'var2': 'generator_switchOffSignal2'}
@@ -56,7 +56,7 @@ def add_gen_speed_protection_and_params(dyd_root, par_root, namespace, network_n
         rand_omegaMax = 0
         rand_omegaMin = 0
         rand_CB = 0
-    
+
     speed_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : protectionID})
     par_attribs = [
         {'type':'DOUBLE', 'name':'speedProtection_OmegaMaxPu', 'value':str(1.05 + rand_omegaMax)},
@@ -78,7 +78,7 @@ def add_gen_UVA_protection_and_params(dyd_root, par_root, namespace, network_nam
     ]
     for connect_attrib in connect_attribs:
         etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
-    
+
     if randomise:
         rand_UMin = random.uniform(-0.05, 0)
         rand_CB = random.uniform(-CB_max_error, CB_max_error)
@@ -129,7 +129,7 @@ def add_centralised_UFLS_and_params(dyd_root, par_root, namespace, network_name,
     etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), ufls_attrib)
 
     connect_attribs = [
-        {'id1': protectionID, 'var1': 'ufls_omegaMonitoredPu',  'id2': 'OMEGA_REF', 'var2': 'omegaRef_grp_0_value'}
+        {'id1': protectionID, 'var1': 'ufls_omegaMonitoredPu',  'id2': 'OMEGA_REF', 'var2': 'omegaRef_0_value'}
     ]
     for loadID in network.get_loads().index:
         if 'Dummy' not in loadID: # Skip dummy loads
@@ -139,7 +139,7 @@ def add_centralised_UFLS_and_params(dyd_root, par_root, namespace, network_name,
             ]
     for connect_attrib in connect_attribs:
         etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
-    
+
     # UFLS parameters
     ufls_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : protectionID})
     par_attribs = [
@@ -186,7 +186,7 @@ def add_decentralised_UFLS_and_params(dyd_root, par_root, namespace, network_nam
         ]
         for connect_attrib in connect_attribs:
             etree.SubElement(dyd_root, etree.QName(namespace, 'connect'), connect_attrib)
-        
+
         # UFLS parameters
         ufls_par_set = etree.SubElement(par_root, etree.QName(namespace, 'set'), {'id' : protectionID})
         par_attribs = [
@@ -429,7 +429,7 @@ if __name__ == "__main__":
             # Out-of-step protection
             add_gen_OOS_protection_and_params(dyd_root, par_root, namespace, network_name, genID, CB_time, randomise, CB_max_error)
 
-        
+
         # UFLS
         dyd_root.append(etree.Comment('Under-frequency load shedding'))
         centralised = True
@@ -451,7 +451,7 @@ if __name__ == "__main__":
             doc.write(etree.tostring(dyd_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
         with open(os.path.join(output_dir, network_name + '.par'), 'wb') as doc:
             doc.write(etree.tostring(par_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
-        
+
         # Copy the non-modified files
         shutil.copy(full_network_name + '.iidm', output_dir)
         shutil.copy(full_network_name + '.jobs', output_dir)
