@@ -129,7 +129,7 @@ def add_centralised_UFLS_and_params(dyd_root, par_root, namespace, network_name,
     etree.SubElement(dyd_root, etree.QName(namespace, 'blackBoxModel'), ufls_attrib)
 
     connect_attribs = [
-        {'id1': protectionID, 'var1': 'ufls_omegaMonitoredPu',  'id2': 'OMEGA_REF', 'var2': 'omegaRef_grp_0_value'}
+        {'id1': protectionID, 'var1': 'ufls_omegaMonitoredPu',  'id2': 'OMEGA_REF', 'var2': 'omegaRef_0_value'}
     ]
     for loadID in network.get_loads().index:
         if 'Dummy' not in loadID: # Skip dummy loads
