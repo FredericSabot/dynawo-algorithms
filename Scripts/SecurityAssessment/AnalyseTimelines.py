@@ -87,7 +87,7 @@ if __name__ == "__main__":
             gen_disconnections = []
             for event in timeline_:
                 (time, model, event) = event.strip().split(' | ')
-                
+
                 timeline.append([time, model, event])
                 if 'trip' in event:  # Does not include UFLS (might need update if other protections are added)
                     trip_timeline.append((time, model, event))
@@ -98,10 +98,10 @@ if __name__ == "__main__":
                         Z_disarmings.append([time, model, event])  # TODO: now consider the fact that when a zone trips, the others disarm
                     elif 'arming' in event:  # elif -> does not include disarmings
                         Z_armings.append([time, model, event])
-                
+
                 if 'GENERATOR : disconnecting' in event:
                     gen_disconnections.append([time, model, event])
-        
+
         Z_armings_dic[filename] = Z_armings
         Z_disarmings_dic[filename] = Z_disarmings
 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         for load in loads.index:
             if 'Dummy' in load:  # Remove dummy loads
                 loads = loads.drop(load)
-        
+
         total_load = sum([loads.at[load, 'p0'] for load in loads.index])
 
         UFLS_ratio = 1
@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 UFLS_ratio += -0.05
             elif event == 'UFLS step 10 activated':
                 UFLS_ratio += -0.05
-            
+
             elif event == 'LOAD : disconnecting':
                 if 'Dummy' in model:
                     continue
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
         if execution_status == "DIVERGENCE":
             load_shedding = 100.1  # Mark it as 100.1% load shedding to not affect averages, but still see there is a numerical issue
-        
+
         if len(gen_disconnections) == 10:  # All machines are disconnected (not really a convergence issue)
             load_shedding = 100
 
@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
             if float(time) == 5.1 or float(time) == 5.2:  # Events related to the initiating event
                 continue
-                
+
             if 'Speed' in event or 'Under-voltage' in event:  # Only consider distance protections
                 continue
 
@@ -200,7 +200,7 @@ if __name__ == "__main__":
 
                 if float(next_time) > float(time) + 0.1:
                     break
-                
+
                 if 'Speed' in next_event or 'Under-voltage' in next_event:
                     continue
 
@@ -210,7 +210,7 @@ if __name__ == "__main__":
                 close_events_sublist.append((next_time, next_model, next_event))
 
             if len(close_events_sublist) > 1:
-                close_events_list.append(close_events_sublist) 
+                close_events_list.append(close_events_sublist)
         if close_events_list != []:
             close_events_dic[filename] = close_events_list
 
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         shutil.copy(full_name + '.crv', output_dir)
     if os.path.isfile(full_name + '.crt'):
         shutil.copy(full_name + '.crt', output_dir)
-    
+
     # Jobs file: remove reference to old dyd
     jobs_root = etree.parse(full_name + '.jobs', XMLparser).getroot()
     for ref in jobs_root.findall('.//dyn:dynModels', {jobs_prefix: namespace}):
@@ -275,7 +275,7 @@ if __name__ == "__main__":
             else:
                 raise NotImplementedError('Only consider distance protections')
 
-            
+
             init_event = filename[9:-4]  # Strips leading "timeline_" and ending ".xml"
             scenarioID = init_event + '-' + model + '-' + evnt
 
@@ -290,11 +290,11 @@ if __name__ == "__main__":
             dyd_root.append(etree.Comment('Init event'))
             for dyd_model in init_event_root:
                 dyd_root.append(dyd_model)
-            
+
             for dyd_model in dyd_root:
                 if dyd_model.get('parFile') is not None:
                     dyd_model.set('parFile', scenarioID + '.par')
-            
+
             with open(os.path.join(output_dir, scenarioID + '.dyd'), 'wb') as doc:
                 doc.write(etree.tostring(dyd_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
 
@@ -321,7 +321,7 @@ if __name__ == "__main__":
             for (time, model, event) in close_events_sublist[1:]:
                 print('\t', time, model, event)
         print()
-    
+
         # Copy results of originals to not rerun them (only what is in the timeline folder)
         shutil.copy(os.path.join(working_dir, 'timeLine', filename), output_dir_timeline)
 
@@ -336,7 +336,7 @@ if __name__ == "__main__":
 
     for (model, count) in sorted(count_occurences.items(), key=lambda item: item[1]):
         print(model, count)
-    
+
     with open(os.path.join(working_dir, 'TimelineAnalysis.csv'), 'w', newline='')  as csvfile:
         writer = csv.writer(csvfile)
 
@@ -411,7 +411,7 @@ if __name__ == "__main__":
                     disarming_time = next_time - time
                     found = True
                     break
-            
+
             if not found:  # Disarming not found (i.e. tripped)
                 continue
 
@@ -432,7 +432,7 @@ if __name__ == "__main__":
             # if remaining_time < 0:
                 # continue
                 # raise ValueError('Either caused by incorrect settings or numerical issue')
-            
+
             if remaining_time < min_remaining_time:
                 min_remaining_time = remaining_time
                 min_time1 = time
@@ -481,20 +481,17 @@ if __name__ == "__main__":
             """
 
             same_order = True
+            index = 0
             for (time, model, event) in slow_trip_timeline:
                 time = float(time)
-                found = False
-                for (fast_time, fast_model, fast_event) in fast_trip_timeline:
-                    fast_time = float(fast_time)
-                    if fast_model == model and fast_event == event:
-                        found = True
-                        break
-                    else:
-                        continue
-                if found:
-                    if fast_time + 0.07 < time:  # check if they can occur before the considered event
-                        same_order = False
-                        break
+                for (_, following_model, following_event) in slow_trip_timeline[index+1:]:
+                    for (fast_time, fast_model, fast_event) in fast_trip_timeline:
+                        if fast_model == following_model and fast_event == following_event:
+                            fast_time = float(fast_time)
+                            if fast_time + 0.07 < time:  # check if they can occur before the considered event (with more than min CB time difference)
+                                same_order = False
+                            break
+                index += 1
 
 
             missing_events = False
@@ -507,7 +504,17 @@ if __name__ == "__main__":
                 if not found:
                     missing_events = True
                     break
-            
+
+            for (_, model, event) in slow_trip_timeline:  # Search event in slow that is not in fast (not possible if both are derived from a single simulation)
+                found = False
+                for (_, fast_model, fast_event) in fast_trip_timeline:
+                    if fast_model == model and fast_event == event:
+                        found = True
+                        break
+                if not found:
+                    missing_events = True
+                    break
+
             if not same_order:
                 print('1', end=' ')
             else:
